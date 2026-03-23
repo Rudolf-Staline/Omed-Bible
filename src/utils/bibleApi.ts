@@ -24,17 +24,12 @@ const SCRIPTURE_API_VERSIONS: Record<string, string> = {
   nlt: '65eec8e0b60e656b-01', // NLT
 };
 
-const isDev = import.meta.env.DEV;
 
-// bible-api.com allows CORS from any domain — no proxy needed in prod
-const BIBLE_API_BASE = isDev 
-  ? '/bible-api'                    // Vite proxy in development
-  : 'https://bible-api.com';        // Direct call in production
+// bible-api.com CORS can be flaky — always use proxy (Vite in dev, Vercel rewrite in prod)
+const BIBLE_API_BASE = '/bible-api';
 
-// API.Bible also allows CORS
-const SCRIPTURE_API_BASE = isDev
-  ? '/bible-proxy'
-  : 'https://api.scripture.api.bible/v1';
+// API.Bible also through proxy to avoid CORS/preflight issues
+const SCRIPTURE_API_BASE = '/bible-proxy';
 
 const parseScriptureApiVerses = (content: string): Verse[] => {
   if (!content) return [];
