@@ -79,22 +79,40 @@ const parseScriptureApiVerses = (content: string): Verse[] => {
   return [];
 };
 
-const BIBLE_API_CODES: Record<string, string> = {
-  'genese': 'GEN', 'exode': 'EXO', 'levitique': 'LEV', 'nombres': 'NUM', 'deutéronome': 'DEU',
-  'josué': 'JOS', 'juges': 'JDG', 'ruth': 'RUT', '1 samuel': '1SA', '2 samuel': '2SA',
-  '1 rois': '1KI', '2 rois': '2KI', '1 chroniques': '1CH', '2 chroniques': '2CH',
-  'esdras': 'EZR', 'néhémie': 'NEH', 'esther': 'EST', 'job': 'JOB', 'psaumes': 'PSA',
-  'proverbes': 'PRO', 'ecclésiaste': 'ECC', 'cantique': 'SNG', 'ésaïe': 'ISA',
-  'jérémie': 'JER', 'lamentations': 'LAM', 'ézéchiel': 'EZK', 'daniel': 'DAN',
-  'osée': 'HOS', 'joël': 'JOL', 'amos': 'AMO', 'abdias': 'OBA', 'jonas': 'JON',
-  'michée': 'MIC', 'nahum': 'NAM', 'habacuc': 'HAB', 'sophonie': 'ZEP', 'aggée': 'HAG',
-  'zacharie': 'ZEC', 'malachie': 'MAL', 'matthieu': 'MAT', 'marc': 'MRK', 'luc': 'LUK',
-  'jean': 'JHN', 'actes': 'ACT', 'romains': 'ROM', '1 corinthiens': '1CO',
-  '2 corinthiens': '2CO', 'galates': 'GAL', 'éphésiens': 'EPH', 'philippiens': 'PHP',
-  'colossiens': 'COL', '1 thessaloniciens': '1TH', '2 thessaloniciens': '2TH',
-  '1 timothée': '1TI', '2 timothée': '2TI', 'tite': 'TIT', 'philémon': 'PHM',
-  'hébreux': 'HEB', 'jacques': 'JAS', '1 pierre': '1PE', '2 pierre': '2PE',
-  '1 jean': '1JN', '2 jean': '2JN', '3 jean': '3JN', 'jude': 'JUD', 'apocalypse': 'REV'
+const BIBLE_API_FRENCH_NAMES: Record<string, string> = {
+  'genese': 'genese', 'exode': 'exode', 'levitique': 'levitique', 'nombres': 'nombres', 'deutéronome': 'deuteronome',
+  'josué': 'josue', 'juges': 'juges', 'ruth': 'ruth', '1 samuel': '1samuel', '2 samuel': '2samuel',
+  '1 rois': '1rois', '2 rois': '2rois', '1 chroniques': '1chroniques', '2 chroniques': '2chroniques',
+  'esdras': 'esdras', 'néhémie': 'nehemie', 'esther': 'esther', 'job': 'job', 'psaumes': 'psaumes',
+  'proverbes': 'proverbes', 'ecclésiaste': 'ecclesiaste', 'cantique': 'cantique', 'ésaïe': 'esaie',
+  'jérémie': 'jeremie', 'lamentations': 'lamentations', 'ézéchiel': 'ezechiel', 'daniel': 'daniel',
+  'osée': 'osee', 'joël': 'joel', 'amos': 'amos', 'abdias': 'abdias', 'jonas': 'jonas',
+  'michée': 'michee', 'nahum': 'nahum', 'habacuc': 'habacuc', 'sophonie': 'sophonie', 'aggée': 'aggee',
+  'zacharie': 'zacharie', 'malachie': 'malachie', 'matthieu': 'matthieu', 'marc': 'marc', 'luc': 'luc',
+  'jean': 'jean', 'actes': 'actes', 'romains': 'romains', '1 corinthiens': '1corinthiens',
+  '2 corinthiens': '2corinthiens', 'galates': 'galates', 'éphésiens': 'ephesiens', 'philippiens': 'philippiens',
+  'colossiens': 'colossiens', '1 thessaloniciens': '1thessaloniciens', '2 thessaloniciens': '2thessaloniciens',
+  '1 timothée': '1timothee', '2 timothée': '2timothee', 'tite': 'tite', 'philémon': 'philemon',
+  'hébreux': 'hebreux', 'jacques': 'jacques', '1 pierre': '1pierre', '2 pierre': '2pierre',
+  '1 jean': '1jean', '2 jean': '2jean', '3 jean': '3jean', 'jude': 'jude', 'apocalypse': 'apocalypse'
+};
+
+const BIBLE_API_ENGLISH_NAMES: Record<string, string> = {
+  'genese': 'Genesis', 'exode': 'Exodus', 'levitique': 'Leviticus', 'nombres': 'Numbers', 'deutéronome': 'Deuteronomy',
+  'josué': 'Joshua', 'juges': 'Judges', 'ruth': 'Ruth', '1 samuel': '1 Samuel', '2 samuel': '2 Samuel',
+  '1 rois': '1 Kings', '2 rois': '2 Kings', '1 chroniques': '1 Chronicles', '2 chroniques': '2 Chronicles',
+  'esdras': 'Ezra', 'néhémie': 'Nehemiah', 'esther': 'Esther', 'job': 'Job', 'psaumes': 'Psalms',
+  'proverbes': 'Proverbs', 'ecclésiaste': 'Ecclesiastes', 'cantique': 'Song of Solomon', 'ésaïe': 'Isaiah',
+  'jérémie': 'Jeremiah', 'lamentations': 'Lamentations', 'ézéchiel': 'Ezekiel', 'daniel': 'Daniel',
+  'osée': 'Hosea', 'joël': 'Joel', 'amos': 'Amos', 'abdias': 'Obadiah', 'jonas': 'Jonah',
+  'michée': 'Micah', 'nahum': 'Nahum', 'habacuc': 'Habakkuk', 'sophonie': 'Zephaniah', 'aggée': 'Haggai',
+  'zacharie': 'Zechariah', 'malachie': 'Malachi', 'matthieu': 'Matthew', 'marc': 'Mark', 'luc': 'Luke',
+  'jean': 'John', 'actes': 'Acts', 'romains': 'Romans', '1 corinthiens': '1 Corinthians',
+  '2 corinthiens': '2 Corinthians', 'galates': 'Galatians', 'éphésiens': 'Ephesians', 'philippiens': 'Philippians',
+  'colossiens': 'Colossians', '1 thessaloniciens': '1 Thessalonians', '2 thessaloniciens': '2 Thessalonians',
+  '1 timothée': '1 Timothy', '2 timothée': '2 Timothy', 'tite': 'Titus', 'philémon': 'Philemon',
+  'hébreux': 'Hebrews', 'jacques': 'James', '1 pierre': '1 Peter', '2 pierre': '2 Peter',
+  '1 jean': '1 John', '2 jean': '2 John', '3 jean': '3 John', 'jude': 'Jude', 'apocalypse': 'Revelation'
 };
 
 export const getChapter = async (
@@ -103,17 +121,20 @@ export const getChapter = async (
   chapter: number
 ): Promise<Verse[]> => {
   if (BIBLE_API_VERSIONS.includes(translation)) {
-    // bible-api.com - using the more precise /data endpoint
-    const bookCode = BIBLE_API_CODES[book.toLowerCase()] || book;
-    
-    // For single chapter books, API suggests this param (though /data format might not need it, we follow doc)
+    // bible-api.com
+    const isFrench = ['lsg', 'ost'].includes(translation);
+    const apiBookName = isFrench 
+      ? (BIBLE_API_FRENCH_NAMES[book.toLowerCase()] || book.toLowerCase())
+      : (BIBLE_API_ENGLISH_NAMES[book.toLowerCase()] || book);
+
+    // Specific logic for single chapter books on User Input API
     const singleChapterBooks = ['abdias', 'philémon', '2 jean', '3 jean', 'jude'];
     const extraParams = singleChapterBooks.includes(book.toLowerCase()) 
-      ? '?single_chapter_book_matching=indifferent' 
+      ? '&single_chapter_book_matching=indifferent' 
       : '';
 
     const res = await fetch(
-      `${BIBLE_API_BASE}/data/${translation}/${encodeURIComponent(bookCode)}/${chapter}${extraParams}`
+      `${BIBLE_API_BASE}/${encodeURIComponent(apiBookName)}+${chapter}?translation=${translation}${extraParams}`
     );
     if (!res.ok) throw new Error('Failed to fetch chapter');
     const data = await res.json();
