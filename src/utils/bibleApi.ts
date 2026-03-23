@@ -24,6 +24,18 @@ const SCRIPTURE_API_VERSIONS: Record<string, string> = {
   nlt: '65eec8e0b60e656b-01', // NLT
 };
 
+const isDev = import.meta.env.DEV;
+
+// bible-api.com allows CORS from any domain — no proxy needed in prod
+const BIBLE_API_BASE = isDev 
+  ? '/bible-api'                    // Vite proxy in development
+  : 'https://bible-api.com';        // Direct call in production
+
+// API.Bible also allows CORS
+const SCRIPTURE_API_BASE = isDev
+  ? '/bible-proxy'
+  : 'https://api.scripture.api.bible/v1';
+
 const parseScriptureApiVerses = (content: string): Verse[] => {
   if (!content) return [];
   // Parse the HTML content from API.Bible into a plain list of verses
@@ -150,7 +162,7 @@ export const getChapter = async (
     // bible-api.com
     const englishBook = FRENCH_TO_ENGLISH_BOOKS[book.toLowerCase()] || book;
     const res = await fetch(
-      `/bible-api/${encodeURIComponent(englishBook)}+${chapter}?translation=${translation}`
+      `${BIBLE_API_BASE}/${encodeURIComponent(englishBook)}+${chapter}?translation=${translation}`
     );
     if (!res.ok) throw new Error('Failed to fetch chapter');
     const data = await res.json();
@@ -160,7 +172,7 @@ export const getChapter = async (
     const bibleId = SCRIPTURE_API_VERSIONS[translation];
     const chapterId = `${book.toUpperCase()}.${chapter}`;
     const res = await fetch(
-      `/bible-proxy/bibles/${bibleId}/chapters/${chapterId}?content-type=html&include-verse-numbers=true`,
+      `${SCRIPTURE_API_BASE}/bibles/${bibleId}/chapters/${chapterId}?content-type=html&include-verse-numbers=true`,
       { headers: { 'api-key': import.meta.env.VITE_BIBLE_API_KEY || '' } }
     );
     if (!res.ok) throw new Error('Failed to fetch chapter');
@@ -185,7 +197,7 @@ export const searchVerses = async (
   } else {
     const bibleId = SCRIPTURE_API_VERSIONS[translation];
     const res = await fetch(
-      `/bible-proxy/bibles/${bibleId}/search?query=${encodeURIComponent(query)}&limit=20`,
+      `${SCRIPTURE_API_BASE}/bibles/${bibleId}/search?query=${encodeURIComponent(query)}&limit=20`,
       { headers: { 'api-key': import.meta.env.VITE_BIBLE_API_KEY || '' } }
     );
     if (!res.ok) throw new Error('Failed to search');
