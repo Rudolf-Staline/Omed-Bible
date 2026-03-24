@@ -1,16 +1,7 @@
 {
   "rewrites": [
-    {
-      "source": "/bible-api/:path*",
-      "destination": "https://bible-api.com/:path*"
-    },
-    {
-      "source": "/bible-proxy/:path*", 
-      "destination": "https://api.scripture.api.bible/v1/:path*"
-    },
-    {
-      "source": "/((?!api/|bible-api/|bible-proxy/|.*\\..*).*)",
-      "destination": "/index.html"
-    }
+    { "source": "/bible-api/:path*", "destination": "https://bible-api.com/:path*" },
+    { "source": "/bible-proxy/:path*", "destination": "https://api.scripture.api.bible/v1/:path*" },
+    { "source": "/:path*", "destination": "/index.html" }
   ]
 }
