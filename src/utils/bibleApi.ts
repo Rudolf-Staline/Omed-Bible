@@ -14,11 +14,10 @@ export interface SearchResult {
   chapter_id: string;
 }
 
-// Versions utilisant api.getbible.net (French translations)
-const GETBIBLE_VERSIONS: Record<string, string> = {
-  lsg: 'ls1910',    // Louis Segond 1910
-  darby: 'darby',   // Darby (French)
-  martin: 'martin', // Martin 1744
+// Versions utilisant bolls.life (French translations — reliable, CORS enabled)
+const BOLLS_VERSIONS: Record<string, string> = {
+  lsg: 'FRLSG',    // Bible Segond 1910
+  darby: 'FRDBY',  // Darby (French) 1890
 };
 
 // Versions utilisant bible-api.com (English translations only)
@@ -173,24 +172,25 @@ export const getChapter = async (
   book: string,
   chapter: number
 ): Promise<Verse[]> => {
-  const getbibleId = GETBIBLE_VERSIONS[translation];
+  const bollsId = BOLLS_VERSIONS[translation];
   
-  if (getbibleId) {
-    // api.getbible.net — for French translations (LSG, Darby, Martin)
+  if (bollsId) {
+    // bolls.life — for French translations (LSG, Darby)
     const bookNr = BOOK_NUMBERS[book.toLowerCase()];
     if (!bookNr) throw new Error(`Unknown book: ${book}`);
     
     const res = await fetch(
-      `https://api.getbible.net/v2/${getbibleId}/${bookNr}/${chapter}.json`
+      `https://bolls.life/get-chapter/${bollsId}/${bookNr}/${chapter}/`
     );
     if (!res.ok) throw new Error('Failed to fetch chapter');
     const data = await res.json();
     
-    // Transform getbible.net response to our Verse[] format
-    return (data.verses || []).map((v: { chapter: number; verse: number; name: string; text: string }) => ({
+    // Transform bolls.life response to our Verse[] format
+    // bolls.life returns [{pk, verse, text}, ...]
+    return (data || []).map((v: { pk: number; verse: number; text: string }) => ({
       book_id: book.toLowerCase(),
-      book_name: data.book_name || book,
-      chapter: v.chapter,
+      book_name: book,
+      chapter: chapter,
       verse: v.verse,
       text: v.text.trim()
     }));
@@ -234,9 +234,9 @@ export const searchVerses = async (
   translation: string,
   query: string
 ): Promise<SearchResult[]> => {
-  const getbibleId = GETBIBLE_VERSIONS[translation];
+  const bollsId = BOLLS_VERSIONS[translation];
   
-  if (getbibleId || BIBLE_API_VERSIONS.includes(translation)) {
+  if (bollsId || BIBLE_API_VERSIONS.includes(translation)) {
     // Neither getbible.net nor bible-api.com support search natively
     return searchLocalCache(query, translation);
   } else {
@@ -324,9 +324,8 @@ export const BIBLE_BOOKS = [
 ];
 
 export const FEATURED_TRANSLATIONS = [
-  { id: 'lsg', name: 'Louis Segond 1910', language: 'fr', short: 'LSG', source: 'getbible' },
-  { id: 'darby', name: 'Darby (Français)', language: 'fr', short: 'DBY', source: 'getbible' },
-  { id: 'martin', name: 'Martin 1744', language: 'fr', short: 'MAR', source: 'getbible' },
+  { id: 'lsg', name: 'Louis Segond 1910', language: 'fr', short: 'LSG', source: 'bolls' },
+  { id: 'darby', name: 'Darby (Français)', language: 'fr', short: 'DBY', source: 'bolls' },
   { id: 'kjv', name: 'King James Version', language: 'en', short: 'KJV', source: 'bible-api' },
   { id: 'web', name: 'World English Bible', language: 'en', short: 'WEB', source: 'bible-api' },
   { id: 'niv', name: 'New International Version', language: 'en', short: 'NIV', source: 'scripture-api' },
