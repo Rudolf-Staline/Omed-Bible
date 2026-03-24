@@ -223,31 +223,48 @@ export const getChapter = async (
   }
 };
 
-const searchLocalCache = async (_query: string, translation: string): Promise<SearchResult[]> => {
-  // Mock fallback search for bible-api.com (since it doesn't support search)
-  // In a real app, you might index fetched verses or use a separate search service
-  console.warn(`Search not natively supported for ${translation} on bible-api.com. Fallback returning empty.`);
-  return [];
-};
-
 export const searchVerses = async (
   translation: string,
   query: string
 ): Promise<SearchResult[]> => {
-  const bollsId = BOLLS_VERSIONS[translation];
+  const bollsSearchMap: Record<string, string> = {
+    lsg: 'FRLSG',
+    darby: 'FRDBY',
+    kjv: 'KJV',
+    web: 'WEB',
+    bbe: 'YLT' // Fallback to YLT (Young's Literal Translation) if BBE doesn't exist on bolls
+  };
   
-  if (bollsId || BIBLE_API_VERSIONS.includes(translation)) {
-    // Neither getbible.net nor bible-api.com support search natively
-    return searchLocalCache(query, translation);
-  } else {
-    const bibleId = SCRIPTURE_API_VERSIONS[translation];
-    const res = await fetch(
-      `/bible-proxy/bibles/${bibleId}/search?query=${encodeURIComponent(query)}&limit=20`,
-      { headers: { 'api-key': import.meta.env.VITE_BIBLE_API_KEY || '' } }
-    );
-    if (!res.ok) throw new Error('Failed to search');
+  const bollsId = bollsSearchMap[translation] || 'FRLSG';
+  
+  try {
+    const res = await fetch(`https://bolls.life/search/${bollsId}/?search=${encodeURIComponent(query)}&match_case=false&match_whole_word=false`);
+    if (!res.ok) return [];
     const data = await res.json();
-    return data.data?.verses || [];
+    
+    const getBookIdByNumber = (num: number): string => {
+       // Reverse lookup from BOOK_NUMBERS
+       const entry = Object.entries(BOOK_NUMBERS).find(([_, n]) => n === num);
+       return entry ? entry[0] : 'genese';
+    };
+
+    return (data || []).map((v: { book: number, chapter: number, verse: number, text: string }) => {
+       const bookId = getBookIdByNumber(v.book);
+       const bookName = BIBLE_BOOKS.find(b => b.id === bookId)?.name || bookId;
+       const ref = `${bookName} ${v.chapter}:${v.verse}`;
+       
+       return {
+         reference: ref,
+         // Strip HTML tags (like <mark> or <S> strongs numbers)
+         text: v.text.replace(/<[^>]+>/g, ''),
+         translation_id: translation,
+         book_id: bookId,
+         chapter_id: v.chapter.toString() // String matching what the app expects
+       };
+    });
+  } catch (err) {
+    console.error("Erreur de recherche:", err);
+    return [];
   }
 };
 

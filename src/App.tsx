@@ -28,6 +28,7 @@ function App() {
   const token = useAuthStore((state) => state.token);
   const synced = useSettingsStore((state) => state.synced);
   const loadSettings = useSettingsStore((state) => state.loadSettings);
+  const settings = useSettingsStore((state) => state.settings);
   const loadFavorites = useFavoritesStore((state) => state.loadFavorites);
   const loadHighlights = useHighlightsStore((state) => state.loadHighlights);
   const loadNotes = useNotesStore((state) => state.loadNotes);
@@ -37,6 +38,14 @@ function App() {
   useEffect(() => {
     restoreSession();
   }, [restoreSession]);
+
+  useEffect(() => {
+    const root = document.documentElement;
+    root.classList.remove('theme-light', 'theme-sepia', 'theme-dark');
+    if (settings.theme === 'Sepia') root.classList.add('theme-sepia');
+    else if (settings.theme === 'Dark') root.classList.add('theme-dark');
+    else root.classList.add('theme-light');
+  }, [settings.theme]);
 
   useEffect(() => {
     if (token && synced) {
