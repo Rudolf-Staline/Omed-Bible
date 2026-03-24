@@ -1,7 +1,10 @@
 {
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist",
+  "framework": "vite",
   "rewrites": [
     { "source": "/bible-api/:path*", "destination": "https://bible-api.com/:path*" },
     { "source": "/bible-proxy/:path*", "destination": "https://api.scripture.api.bible/v1/:path*" },
-    { "source": "/:path*", "destination": "/index.html" }
+    { "source": "/(.*)", "destination": "/index.html" }
   ]
 }
