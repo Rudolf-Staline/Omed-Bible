@@ -328,5 +328,5 @@ export const FEATURED_TRANSLATIONS = [
   { id: 'darby', name: 'Darby (Français)', language: 'fr', short: 'DBY', source: 'bolls' },
   { id: 'kjv', name: 'King James Version', language: 'en', short: 'KJV', source: 'bible-api' },
   { id: 'web', name: 'World English Bible', language: 'en', short: 'WEB', source: 'bible-api' },
-  { id: 'niv', name: 'New International Version', language: 'en', short: 'NIV', source: 'scripture-api' },
+  { id: 'bbe', name: 'Bible in Basic English', language: 'en', short: 'BBE', source: 'bible-api' },
 ];
