@@ -29,7 +29,7 @@ export const LoginPage: React.FC = () => {
         console.error('Failed to fetch user info', error);
       }
     },
-    scope: 'userinfo.profile userinfo.email https://www.googleapis.com/auth/drive.appdata',
+    scope: 'https://www.googleapis.com/auth/drive.appdata',
   });
 
   return (
