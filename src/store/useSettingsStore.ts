@@ -46,9 +46,13 @@ const getInitialSettings = (): Settings => {
   return DEFAULT_SETTINGS;
 };
 
+const getInitialSynced = (): boolean => {
+  return localStorage.getItem('omed_bible_synced') === 'true';
+};
+
 export const useSettingsStore = create<SettingsState>((set) => ({
   settings: getInitialSettings(),
-  synced: false,
+  synced: getInitialSynced(),
   updateSettings: (newSettings) =>
     set((state) => {
       const updated = { ...state.settings, ...newSettings };
@@ -62,5 +66,8 @@ export const useSettingsStore = create<SettingsState>((set) => ({
       return { settings: updated };
     }),
   loadSettings: (settings) => set({ settings }),
-  setSynced: (synced) => set({ synced }),
+  setSynced: (synced) => {
+    localStorage.setItem('omed_bible_synced', String(synced));
+    set({ synced });
+  },
 }));
