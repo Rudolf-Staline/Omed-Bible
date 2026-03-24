@@ -14,14 +14,40 @@ export interface SearchResult {
   chapter_id: string;
 }
 
-// Versions utilisant bible-api.com
-const BIBLE_API_VERSIONS = ['lsg', 'ost', 'kjv', 'web', 'bbe'];
+// Versions utilisant api.getbible.net (French translations)
+const GETBIBLE_VERSIONS: Record<string, string> = {
+  lsg: 'ls1910',    // Louis Segond 1910
+  darby: 'darby',   // Darby (French)
+  martin: 'martin', // Martin 1744
+};
+
+// Versions utilisant bible-api.com (English translations only)
+const BIBLE_API_VERSIONS = ['kjv', 'web', 'bbe'];
 
 // Versions utilisant API.Bible
 const SCRIPTURE_API_VERSIONS: Record<string, string> = {
   niv: '06125adad2d5898a-01', // NIV
   esv: 'f421fe261da7624f-01', // ESV
   nlt: '65eec8e0b60e656b-01', // NLT
+};
+
+// Mapping French book IDs to getbible.net book numbers
+const BOOK_NUMBERS: Record<string, number> = {
+  'genese': 1, 'exode': 2, 'levitique': 3, 'nombres': 4, 'deutéronome': 5,
+  'josué': 6, 'juges': 7, 'ruth': 8, '1 samuel': 9, '2 samuel': 10,
+  '1 rois': 11, '2 rois': 12, '1 chroniques': 13, '2 chroniques': 14,
+  'esdras': 15, 'néhémie': 16, 'esther': 17, 'job': 18, 'psaumes': 19,
+  'proverbes': 20, 'ecclésiaste': 21, 'cantique': 22, 'ésaïe': 23,
+  'jérémie': 24, 'lamentations': 25, 'ézéchiel': 26, 'ezechiel': 26, 'daniel': 27,
+  'osée': 28, 'joël': 29, 'amos': 30, 'abdias': 31, 'jonas': 32,
+  'michée': 33, 'nahum': 34, 'habacuc': 35, 'sophonie': 36, 'aggée': 37,
+  'zacharie': 38, 'malachie': 39, 'matthieu': 40, 'marc': 41, 'luc': 42,
+  'jean': 43, 'actes': 44, 'romains': 45, '1 corinthiens': 46,
+  '2 corinthiens': 47, 'galates': 48, 'éphésiens': 49, 'philippiens': 50,
+  'colossiens': 51, '1 thessaloniciens': 52, '2 thessaloniciens': 53,
+  '1 timothée': 54, '2 timothée': 55, 'tite': 56, 'philémon': 57,
+  'hébreux': 58, 'jacques': 59, '1 pierre': 60, '2 pierre': 61,
+  '1 jean': 62, '2 jean': 63, '3 jean': 64, 'jude': 65, 'apocalypse': 66
 };
 
 const parseScriptureApiVerses = (content: string): Verse[] => {
@@ -147,8 +173,29 @@ export const getChapter = async (
   book: string,
   chapter: number
 ): Promise<Verse[]> => {
-  if (BIBLE_API_VERSIONS.includes(translation)) {
-    // bible-api.com
+  const getbibleId = GETBIBLE_VERSIONS[translation];
+  
+  if (getbibleId) {
+    // api.getbible.net — for French translations (LSG, Darby, Martin)
+    const bookNr = BOOK_NUMBERS[book.toLowerCase()];
+    if (!bookNr) throw new Error(`Unknown book: ${book}`);
+    
+    const res = await fetch(
+      `https://api.getbible.net/v2/${getbibleId}/${bookNr}/${chapter}.json`
+    );
+    if (!res.ok) throw new Error('Failed to fetch chapter');
+    const data = await res.json();
+    
+    // Transform getbible.net response to our Verse[] format
+    return (data.verses || []).map((v: { chapter: number; verse: number; name: string; text: string }) => ({
+      book_id: book.toLowerCase(),
+      book_name: data.book_name || book,
+      chapter: v.chapter,
+      verse: v.verse,
+      text: v.text.trim()
+    }));
+  } else if (BIBLE_API_VERSIONS.includes(translation)) {
+    // bible-api.com — for English translations (KJV, WEB, BBE)
     const apiBookName = FRENCH_TO_ENGLISH_BOOKS[book.toLowerCase()] || book;
 
     const singleChapterBooks = ['abdias', 'philémon', '2 jean', '3 jean', 'jude'];
@@ -163,7 +210,7 @@ export const getChapter = async (
     const data = await res.json();
     return data.verses || [];
   } else {
-    // API.Bible
+    // API.Bible — for NIV, ESV, NLT
     const bibleId = SCRIPTURE_API_VERSIONS[translation];
     const chapterId = `${book.toUpperCase()}.${chapter}`;
     const res = await fetch(
@@ -187,7 +234,10 @@ export const searchVerses = async (
   translation: string,
   query: string
 ): Promise<SearchResult[]> => {
-  if (BIBLE_API_VERSIONS.includes(translation)) {
+  const getbibleId = GETBIBLE_VERSIONS[translation];
+  
+  if (getbibleId || BIBLE_API_VERSIONS.includes(translation)) {
+    // Neither getbible.net nor bible-api.com support search natively
     return searchLocalCache(query, translation);
   } else {
     const bibleId = SCRIPTURE_API_VERSIONS[translation];
@@ -274,8 +324,9 @@ export const BIBLE_BOOKS = [
 ];
 
 export const FEATURED_TRANSLATIONS = [
-  { id: 'lsg', name: 'Louis Segond 1910', language: 'fr', short: 'LSG', source: 'bible-api' },
-  { id: 'ost', name: 'Ostervald', language: 'fr', short: 'OST', source: 'bible-api' },
+  { id: 'lsg', name: 'Louis Segond 1910', language: 'fr', short: 'LSG', source: 'getbible' },
+  { id: 'darby', name: 'Darby (Français)', language: 'fr', short: 'DBY', source: 'getbible' },
+  { id: 'martin', name: 'Martin 1744', language: 'fr', short: 'MAR', source: 'getbible' },
   { id: 'kjv', name: 'King James Version', language: 'en', short: 'KJV', source: 'bible-api' },
   { id: 'web', name: 'World English Bible', language: 'en', short: 'WEB', source: 'bible-api' },
   { id: 'niv', name: 'New International Version', language: 'en', short: 'NIV', source: 'scripture-api' },
