@@ -36,13 +36,13 @@ export const useHighlightsStore = create<HighlightsState>((set) => ({
     set((state) => {
       const newHighlights = { ...state.highlights, [id]: { id, color, dateAdded: Date.now() } };
       localStorage.setItem('omed_bible_highlights', JSON.stringify(newHighlights));
-
+      
       const token = useAuthStore.getState().token;
       const synced = useSettingsStore.getState().synced;
       if (token && synced) {
         syncFileToDrive(DRIVE_FILES.highlights, newHighlights, token).catch(console.error);
       }
-
+      
       return { highlights: newHighlights };
     }),
   removeHighlight: (id) =>
@@ -50,13 +50,13 @@ export const useHighlightsStore = create<HighlightsState>((set) => ({
       const newHighlights = { ...state.highlights };
       delete newHighlights[id];
       localStorage.setItem('omed_bible_highlights', JSON.stringify(newHighlights));
-
+      
       const token = useAuthStore.getState().token;
       const synced = useSettingsStore.getState().synced;
       if (token && synced) {
         syncFileToDrive(DRIVE_FILES.highlights, newHighlights, token).catch(console.error);
       }
-
+      
       return { highlights: newHighlights };
     }),
   loadHighlights: (highlights) => set({ highlights }),

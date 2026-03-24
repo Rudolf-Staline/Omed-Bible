@@ -45,13 +45,13 @@ export const useNotesStore = create<NotesState>((set) => ({
       };
       const newNotes = [...state.notes, newNote];
       localStorage.setItem('omed_bible_notes', JSON.stringify(newNotes));
-
+      
       const token = useAuthStore.getState().token;
       const synced = useSettingsStore.getState().synced;
       if (token && synced) {
         syncFileToDrive(DRIVE_FILES.notes, newNotes, token).catch(console.error);
       }
-
+      
       return { notes: newNotes };
     }),
   updateNote: (id, text) =>
@@ -60,26 +60,26 @@ export const useNotesStore = create<NotesState>((set) => ({
         n.id === id ? { ...n, text, dateModified: Date.now() } : n
       );
       localStorage.setItem('omed_bible_notes', JSON.stringify(newNotes));
-
+      
       const token = useAuthStore.getState().token;
       const synced = useSettingsStore.getState().synced;
       if (token && synced) {
         syncFileToDrive(DRIVE_FILES.notes, newNotes, token).catch(console.error);
       }
-
+      
       return { notes: newNotes };
     }),
   removeNote: (id) =>
     set((state) => {
       const newNotes = state.notes.filter((n) => n.id !== id);
       localStorage.setItem('omed_bible_notes', JSON.stringify(newNotes));
-
+      
       const token = useAuthStore.getState().token;
       const synced = useSettingsStore.getState().synced;
       if (token && synced) {
         syncFileToDrive(DRIVE_FILES.notes, newNotes, token).catch(console.error);
       }
-
+      
       return { notes: newNotes };
     }),
   loadNotes: (notes) => set({ notes }),

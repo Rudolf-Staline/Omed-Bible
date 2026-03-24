@@ -30,7 +30,7 @@ export const Sidebar: React.FC = () => {
       <div className="px-4 py-2 text-xs font-semibold text-text-muted tracking-wider uppercase">
         Naviguer
       </div>
-
+      
       <nav className="flex-1 px-3 space-y-1 overflow-y-auto">
         {navItems.map((item) => (
           <NavLink
@@ -73,7 +73,7 @@ export const Sidebar: React.FC = () => {
             </button>
           </div>
         )}
-
+        
         <div className="space-y-1">
           <NavLink
             to="/settings"
@@ -89,7 +89,7 @@ export const Sidebar: React.FC = () => {
             <Settings size={18} />
             Paramètres
           </NavLink>
-
+          
           <div className="flex items-center gap-3 px-3 py-2 text-sm font-medium text-text-muted">
             <Cloud size={18} className={synced ? 'text-accent-sage' : ''} />
             {synced ? 'Synchronisé' : 'Non synchronisé'}

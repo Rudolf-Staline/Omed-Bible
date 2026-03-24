@@ -53,12 +53,12 @@ export const useSettingsStore = create<SettingsState>((set) => ({
     set((state) => {
       const updated = { ...state.settings, ...newSettings };
       localStorage.setItem('omed_bible_settings', JSON.stringify(updated));
-
+      
       const token = useAuthStore.getState().token;
       if (token && state.synced) {
         syncFileToDrive(DRIVE_FILES.settings, updated, token).catch(console.error);
       }
-
+      
       return { settings: updated };
     }),
   loadSettings: (settings) => set({ settings }),

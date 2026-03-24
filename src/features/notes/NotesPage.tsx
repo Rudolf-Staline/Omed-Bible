@@ -67,7 +67,7 @@ export const NotesPage: React.FC = () => {
                 </div>
 
                 <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                  <button
+                  <button 
                     onClick={() => {
                       if(window.confirm('Supprimer cette note ?')) {
                         removeNote(note.id);

@@ -33,13 +33,13 @@ export const useBibleStore = create<BibleState>((set) => ({
   setPosition: (translation, bookId, chapter) => set((state) => {
      const newState = { translation, bookId, chapter, compareTranslation: state.compareTranslation };
      localStorage.setItem('omed_bible_position', JSON.stringify(newState));
-
+     
      const token = useAuthStore.getState().token;
      const synced = useSettingsStore.getState().synced;
      if (token && synced) {
         syncFileToDrive(DRIVE_FILES.position, newState, token).catch(console.error);
      }
-
+     
      return newState;
   }),
   setCompareTranslation: (compareTranslation) => set({ compareTranslation }),

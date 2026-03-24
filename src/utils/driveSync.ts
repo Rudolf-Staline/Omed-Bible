@@ -40,7 +40,7 @@ export const syncFileToDrive = async (fileName: string, data: any, token: string
     const url = fileId
       ? `https://www.googleapis.com/upload/drive/v3/files/${fileId}?uploadType=multipart`
       : `https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart`;
-
+    
     const method = fileId ? 'PATCH' : 'POST';
 
     const res = await fetch(url, {
@@ -48,7 +48,7 @@ export const syncFileToDrive = async (fileName: string, data: any, token: string
       headers: { Authorization: `Bearer ${token}` },
       body: form,
     });
-
+    
     if (!res.ok) throw new Error(`Failed to upload ${fileName}`);
     return true;
   } catch (error) {
@@ -65,7 +65,7 @@ export const syncFileFromDrive = async (fileName: string, token: string) => {
     const res = await fetch(`https://www.googleapis.com/drive/v3/files/${fileId}?alt=media`, {
       headers: { Authorization: `Bearer ${token}` },
     });
-
+    
     if (!res.ok) throw new Error(`Failed to download ${fileName}`);
     return await res.json();
   } catch (error) {

@@ -38,13 +38,13 @@ export const usePlansStore = create<PlansState>((set) => ({
         [planId]: { planId, completedDays: [], startDate: Date.now() },
       };
       localStorage.setItem('omed_bible_plans', JSON.stringify(newProgress));
-
+      
       const token = useAuthStore.getState().token;
       const synced = useSettingsStore.getState().synced;
       if (token && synced) {
         syncFileToDrive(DRIVE_FILES.plans, newProgress, token).catch(console.error);
       }
-
+      
       return { progress: newProgress };
     }),
   markDayComplete: (planId, dayIndex) =>
@@ -59,13 +59,13 @@ export const usePlansStore = create<PlansState>((set) => ({
         },
       };
       localStorage.setItem('omed_bible_plans', JSON.stringify(newProgress));
-
+      
       const token = useAuthStore.getState().token;
       const synced = useSettingsStore.getState().synced;
       if (token && synced) {
         syncFileToDrive(DRIVE_FILES.plans, newProgress, token).catch(console.error);
       }
-
+      
       return { progress: newProgress };
     }),
   unmarkDayComplete: (planId, dayIndex) =>
@@ -80,13 +80,13 @@ export const usePlansStore = create<PlansState>((set) => ({
         },
       };
       localStorage.setItem('omed_bible_plans', JSON.stringify(newProgress));
-
+      
       const token = useAuthStore.getState().token;
       const synced = useSettingsStore.getState().synced;
       if (token && synced) {
         syncFileToDrive(DRIVE_FILES.plans, newProgress, token).catch(console.error);
       }
-
+      
       return { progress: newProgress };
     }),
   loadPlans: (progress) => set({ progress }),

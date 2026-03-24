@@ -18,7 +18,7 @@ export const ChapterView: React.FC<ChapterViewProps> = ({ translation, bookId, c
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedVerseId, setSelectedVerseId] = useState<string | null>(null);
-
+  
   const settings = useSettingsStore((state) => state.settings);
   const highlights = useHighlightsStore((state) => state.highlights);
 
@@ -44,14 +44,14 @@ export const ChapterView: React.FC<ChapterViewProps> = ({ translation, bookId, c
   if (error) return <div className="py-20 text-center text-red-500">{error}</div>;
 
   const fontClass = settings.fontFamily === 'Lora' ? 'font-body' : 'font-sans';
-
+  
   const sizeClasses = {
     'S': 'text-base',
     'M': 'text-lg',
     'L': 'text-xl',
     'XL': 'text-2xl',
   };
-
+  
   const leadingClasses = {
     'Normal': 'leading-normal',
     'Relaxed': 'leading-relaxed',

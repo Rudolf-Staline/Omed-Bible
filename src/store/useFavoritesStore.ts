@@ -38,26 +38,26 @@ export const useFavoritesStore = create<FavoritesState>((set) => ({
     set((state) => {
       const newFavorites = [...state.favorites, verse];
       localStorage.setItem('omed_bible_favorites', JSON.stringify(newFavorites));
-
+      
       const token = useAuthStore.getState().token;
       const synced = useSettingsStore.getState().synced;
       if (token && synced) {
         syncFileToDrive(DRIVE_FILES.favorites, newFavorites, token).catch(console.error);
       }
-
+      
       return { favorites: newFavorites };
     }),
   removeFavorite: (id) =>
     set((state) => {
       const newFavorites = state.favorites.filter((f) => f.id !== id);
       localStorage.setItem('omed_bible_favorites', JSON.stringify(newFavorites));
-
+      
       const token = useAuthStore.getState().token;
       const synced = useSettingsStore.getState().synced;
       if (token && synced) {
         syncFileToDrive(DRIVE_FILES.favorites, newFavorites, token).catch(console.error);
       }
-
+      
       return { favorites: newFavorites };
     }),
   loadFavorites: (favorites) => set({ favorites }),

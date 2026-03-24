@@ -7,7 +7,7 @@ import { READING_PLANS } from './PlansPage';
 export const PlanDetail: React.FC = () => {
   const { planId } = useParams<{ planId: string }>();
   const navigate = useNavigate();
-
+  
   const progress = usePlansStore((state) => state.progress);
   const markDayComplete = usePlansStore((state) => state.markDayComplete);
   const unmarkDayComplete = usePlansStore((state) => state.unmarkDayComplete);
@@ -33,7 +33,7 @@ export const PlanDetail: React.FC = () => {
 
   return (
     <div className="max-w-3xl mx-auto py-8">
-      <button
+      <button 
         onClick={() => navigate('/plans')}
         className="flex items-center gap-2 text-text-secondary hover:text-text-primary transition-colors mb-6 text-sm font-medium"
       >
@@ -46,7 +46,7 @@ export const PlanDetail: React.FC = () => {
         <p className="font-body text-text-secondary mb-8 leading-relaxed">
           {plan.description}
         </p>
-
+        
         <div className="flex justify-between items-end mb-2">
           <div className="text-sm font-medium text-text-muted">
             <strong className="text-text-primary text-xl mr-2">{completedCount}</strong>
@@ -57,8 +57,8 @@ export const PlanDetail: React.FC = () => {
           </div>
         </div>
         <div className="h-2 w-full bg-bg-secondary rounded-full overflow-hidden">
-          <div
-            className="h-full bg-accent-gold transition-all duration-500 ease-out"
+          <div 
+            className="h-full bg-accent-gold transition-all duration-500 ease-out" 
             style={{ width: `${percentage}%` }}
           />
         </div>
@@ -81,8 +81,8 @@ export const PlanDetail: React.FC = () => {
                 }}
                 className={`
                   aspect-square rounded-xl flex flex-col items-center justify-center border transition-all
-                  ${isCompleted
-                    ? 'bg-accent-sage border-accent-sage text-white shadow-sm'
+                  ${isCompleted 
+                    ? 'bg-accent-sage border-accent-sage text-white shadow-sm' 
                     : 'bg-bg-card border-border text-text-secondary hover:border-accent-gold/50 hover:bg-bg-secondary'
                   }
                 `}

@@ -17,11 +17,11 @@ interface VerseActionsProps {
 
 export const VerseActions: React.FC<VerseActionsProps> = ({ verse, verseId, translation, bookId, onClose }) => {
   const [showColors, setShowColors] = useState(false);
-
+  
   const favorites = useFavoritesStore((state) => state.favorites);
   const addFavorite = useFavoritesStore((state) => state.addFavorite);
   const removeFavorite = useFavoritesStore((state) => state.removeFavorite);
-
+  
   const highlights = useHighlightsStore((state) => state.highlights);
   const addHighlight = useHighlightsStore((state) => state.addHighlight);
   const removeHighlight = useHighlightsStore((state) => state.removeHighlight);
@@ -81,12 +81,12 @@ export const VerseActions: React.FC<VerseActionsProps> = ({ verse, verseId, tran
     canvas.width = 1080;
     canvas.height = 1080;
     const ctx = canvas.getContext('2d');
-
+    
     if (ctx) {
       // Background
       ctx.fillStyle = '#FAFAF7';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
-
+      
       // Border
       ctx.strokeStyle = '#8B6F47';
       ctx.lineWidth = 10;
@@ -95,7 +95,7 @@ export const VerseActions: React.FC<VerseActionsProps> = ({ verse, verseId, tran
       // Text styling
       ctx.fillStyle = '#2C2416';
       ctx.textAlign = 'center';
-
+      
       // Verse Text
       ctx.font = 'italic 56px "Lora", serif';
       const words = `« ${verse.text} »`.split(' ');
@@ -120,7 +120,7 @@ export const VerseActions: React.FC<VerseActionsProps> = ({ verse, verseId, tran
       ctx.font = 'bold 40px "Playfair Display", serif';
       ctx.fillStyle = '#8B6F47';
       ctx.fillText(`${bookId.charAt(0).toUpperCase() + bookId.slice(1)} ${verse.chapter}:${verse.verse}`, canvas.width / 2, y + 150);
-
+      
       // Translation
       ctx.font = '30px "Inter", sans-serif';
       ctx.fillStyle = '#A89880';

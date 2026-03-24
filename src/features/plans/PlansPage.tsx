@@ -34,12 +34,12 @@ export const PlansPage: React.FC = () => {
         {READING_PLANS.map((plan) => {
           const planProgress = progress[plan.id];
           const isStarted = !!planProgress;
-          const percentage = isStarted
+          const percentage = isStarted 
             ? Math.round((planProgress.completedDays.length / plan.days) * 100)
             : 0;
 
           return (
-            <div
+            <div 
               key={plan.id}
               onClick={() => handlePlanClick(plan.id)}
               className="bg-bg-card border border-border rounded-xl p-6 hover:shadow-md transition-shadow cursor-pointer flex flex-col h-full"
@@ -55,7 +55,7 @@ export const PlansPage: React.FC = () => {
               <p className="font-body text-text-secondary text-sm mb-6 flex-1">
                 {plan.description}
               </p>
-
+              
               <div className="mt-auto">
                 {isStarted ? (
                   <div>
@@ -64,8 +64,8 @@ export const PlansPage: React.FC = () => {
                       <span>{percentage}%</span>
                     </div>
                     <div className="h-1.5 w-full bg-bg-secondary rounded-full overflow-hidden">
-                      <div
-                        className="h-full bg-accent-gold transition-all duration-500"
+                      <div 
+                        className="h-full bg-accent-gold transition-all duration-500" 
                         style={{ width: `${percentage}%` }}
                       />
                     </div>

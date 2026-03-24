@@ -33,7 +33,7 @@ export const SearchPage: React.FC = () => {
   const navigateToVerse = (bookId: string, chapterId: string) => {
     // chapterId format usually looks like "JHN.3"
     const [, chapterNum] = chapterId.split('.');
-
+    
     // Find our canonical book id
     const apiBookToLocal = BIBLE_BOOKS.find(b => b.id.toLowerCase().startsWith(bookId.toLowerCase()))?.id || bookId.toLowerCase();
 
@@ -70,7 +70,7 @@ export const SearchPage: React.FC = () => {
 
       <div className="space-y-6">
         {results.length > 0 && <h2 className="text-sm font-semibold text-text-muted uppercase tracking-wider mb-4">{results.length} résultats trouvés</h2>}
-
+        
         {results.map((result, idx) => (
           <div key={idx} className="bg-bg-card border border-border rounded-xl p-6 hover:shadow-md transition-shadow">
             <div className="flex justify-between items-start mb-3">

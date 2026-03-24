@@ -28,7 +28,7 @@ function App() {
     <Router>
       <Routes>
         <Route path="/login" element={<LoginPage />} />
-
+        
         <Route element={<Layout />}>
           <Route path="/" element={<RootRedirect />} />
           <Route path="/read/:translation/:bookId/:chapter" element={<ReaderPage />} />

@@ -38,14 +38,14 @@ export const LoginPage: React.FC = () => {
         <div className="flex justify-center mb-6 text-accent-gold">
           <Sun size={48} strokeWidth={1.5} />
         </div>
-
+        
         <h1 className="font-display text-4xl font-semibold text-text-primary mb-3">
           Omed-Bible
         </h1>
         <p className="font-body text-text-secondary italic mb-10 text-lg">
           La Parole, toujours avec vous.
         </p>
-
+        
         <button
           onClick={() => handleLogin()}
           className="w-full flex items-center justify-center gap-3 bg-bg-secondary hover:bg-border text-text-primary font-sans font-medium py-3 px-6 rounded-lg transition-colors duration-200"

@@ -10,13 +10,13 @@ export const ReaderPage: React.FC = () => {
   const { translation, bookId, chapter } = useParams<{ translation: string; bookId: string; chapter: string }>();
   const navigate = useNavigate();
   const [showAudio, setShowAudio] = React.useState(false);
-
+  
   const setPosition = useBibleStore((state) => state.setPosition);
   const compareTranslation = useBibleStore((state) => state.compareTranslation);
   const setCompareTranslation = useBibleStore((state) => state.setCompareTranslation);
-
+  
   const chapterNum = parseInt(chapter || '1', 10);
-
+  
   useEffect(() => {
     if (translation && bookId && chapter) {
       setPosition(translation, bookId, chapterNum);
@@ -97,7 +97,7 @@ export const ReaderPage: React.FC = () => {
 
         <div className="flex-1" />
 
-        <button
+        <button 
           onClick={() => setShowAudio(true)}
           className="flex items-center gap-2 text-sm text-text-secondary hover:text-text-primary transition-colors"
         >
@@ -105,7 +105,7 @@ export const ReaderPage: React.FC = () => {
           <span className="hidden sm:inline">Audio</span>
         </button>
 
-        <button
+        <button 
           onClick={() => setCompareTranslation(compareTranslation ? null : 'kjv')}
           className={`flex items-center gap-2 text-sm transition-colors ${compareTranslation ? 'text-accent-gold' : 'text-text-secondary hover:text-text-primary'}`}
         >
@@ -119,7 +119,7 @@ export const ReaderPage: React.FC = () => {
         <div className={`flex-1 transition-all ${compareTranslation ? 'pr-4 border-r border-border' : ''}`}>
            <ChapterView translation={translation || 'lsg'} bookId={bookId || 'jean'} chapter={chapterNum} />
         </div>
-
+        
         {compareTranslation && (
           <div className="flex-1 pl-4">
              <div className="mb-4">
@@ -157,11 +157,11 @@ export const ReaderPage: React.FC = () => {
       </footer>
 
       {showAudio && (
-        <AudioPlayer
-          translation={translation || 'kjv'}
-          bookId={bookId || 'jean'}
-          chapter={chapterNum}
-          onClose={() => setShowAudio(false)}
+        <AudioPlayer 
+          translation={translation || 'kjv'} 
+          bookId={bookId || 'jean'} 
+          chapter={chapterNum} 
+          onClose={() => setShowAudio(false)} 
         />
       )}
     </div>

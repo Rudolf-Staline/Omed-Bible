@@ -41,7 +41,7 @@ export const SettingsPage: React.FC = () => {
     try {
       // Pour ce cas, on fusionne d'abord les données locales et distantes
       // ou on télécharge si local est vide (logique simplifiée)
-
+      
       const remoteSettings = await syncFileFromDrive(DRIVE_FILES.settings, token);
       if (remoteSettings) loadSettings(remoteSettings);
 
@@ -70,7 +70,7 @@ export const SettingsPage: React.FC = () => {
       setSyncing(false);
     }
   };
-
+  
   const handleForceUpload = async () => {
     if (!token) return;
     setSyncing(true);
@@ -128,7 +128,7 @@ export const SettingsPage: React.FC = () => {
         {/* Section: Apparence */}
         <section className="bg-bg-card border border-border rounded-xl p-6">
           <h2 className="font-display font-semibold text-xl text-text-primary mb-6">Apparence & Lecture</h2>
-
+          
           <div className="space-y-6">
             <div>
               <label className="block text-sm font-medium text-text-secondary mb-2">Version par défaut</label>
@@ -246,7 +246,7 @@ export const SettingsPage: React.FC = () => {
         {/* Section: Compte & Synchro */}
         <section className="bg-bg-card border border-border rounded-xl p-6">
           <h2 className="font-display font-semibold text-xl text-text-primary mb-6">Compte Google & Synchronisation</h2>
-
+          
           {user ? (
             <div className="space-y-6">
               <div className="flex items-center gap-4 bg-bg-primary p-4 rounded-xl border border-border">
@@ -272,7 +272,7 @@ export const SettingsPage: React.FC = () => {
                   <Cloud size={20} />
                   {syncing ? 'Synchronisation...' : 'Restaurer depuis Google Drive'}
                 </button>
-
+                
                 <button
                   onClick={handleForceUpload}
                   disabled={syncing}
@@ -317,7 +317,7 @@ export const SettingsPage: React.FC = () => {
         {/* Section: Données */}
         <section className="bg-bg-card border border-border rounded-xl p-6">
           <h2 className="font-display font-semibold text-xl text-text-primary mb-6">Données locales</h2>
-
+          
           <div className="space-y-4">
             <button
               onClick={exportData}

@@ -53,7 +53,7 @@ export const FavoritesPage: React.FC = () => {
       <div className="space-y-4">
         {sortedFavorites.map((verse) => {
           const reference = `${verse.bookId.charAt(0).toUpperCase() + verse.bookId.slice(1)} ${verse.chapter}:${verse.verse}`;
-
+          
           return (
             <div key={verse.id} className="bg-bg-card border border-border rounded-xl p-6 group hover:shadow-sm transition-all">
               <div className="flex justify-between items-start mb-4">
@@ -63,16 +63,16 @@ export const FavoritesPage: React.FC = () => {
                     {getTranslationName(verse.translation)}
                   </span>
                 </div>
-
+                
                 <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                  <button
+                  <button 
                     onClick={(e) => handleShare(verse.text, reference, e)}
                     className="p-1.5 text-text-muted hover:text-accent-gold rounded transition-colors"
                     title="Partager"
                   >
                     <Share2 size={16} />
                   </button>
-                  <button
+                  <button 
                     onClick={() => {
                       if(window.confirm('Retirer ce verset des favoris ?')) {
                         removeFavorite(verse.id);

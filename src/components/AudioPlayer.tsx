@@ -88,14 +88,14 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({ translation, bookId, c
           <button className="text-text-muted hover:text-text-primary transition-colors">
             <SkipBack size={20} fill="currentColor" />
           </button>
-
-          <button
+          
+          <button 
             onClick={togglePlay}
             className="w-10 h-10 rounded-full bg-accent-gold text-white flex items-center justify-center hover:bg-accent-brown transition-colors shadow-sm"
           >
             {isPlaying ? <Pause size={20} fill="currentColor" /> : <Play size={20} fill="currentColor" className="ml-1" />}
           </button>
-
+          
           <button className="text-text-muted hover:text-text-primary transition-colors">
             <SkipForward size={20} fill="currentColor" />
           </button>
@@ -103,7 +103,7 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({ translation, bookId, c
 
         {/* Right: Actions */}
         <div className="flex-1 flex items-center justify-end gap-3">
-          <button
+          <button 
             onClick={cycleSpeed}
             className="text-xs font-mono font-medium text-text-secondary hover:text-text-primary w-10 text-right"
           >
@@ -115,9 +115,9 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({ translation, bookId, c
           </button>
         </div>
       </div>
-
-      <audio
-        ref={audioRef}
+      
+      <audio 
+        ref={audioRef} 
         onTimeUpdate={handleTimeUpdate}
         onEnded={() => setIsPlaying(false)}
         className="hidden"
