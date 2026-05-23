@@ -1,18 +1,18 @@
 @import "tailwindcss";
 
 @theme {
-  --color-bg-primary: #FAFAF7;
-  --color-bg-secondary: #F3F0E8;
-  --color-bg-card: #FFFFFF;
-  --color-accent-gold: #C9A84C;
-  --color-accent-brown: #8B6F47;
-  --color-accent-sage: #7A9E7E;
-  --color-text-primary: #2C2416;
-  --color-text-secondary: #6B5D4F;
-  --color-text-muted: #A89880;
-  --color-border: rgba(139, 111, 71, 0.15);
-  --color-shadow: rgba(44, 36, 22, 0.08);
-  
+  --color-bg-primary: #f2eee6;
+  --color-bg-secondary: #e6dfd2;
+  --color-bg-card: #f8f5ee;
+  --color-accent-gold: #a88a54;
+  --color-accent-brown: #6e5940;
+  --color-accent-sage: #6d7b6f;
+  --color-text-primary: #211a13;
+  --color-text-secondary: #4e4338;
+  --color-text-muted: #817365;
+  --color-border: rgba(74, 58, 42, 0.2);
+  --color-shadow: rgba(21, 16, 12, 0.1);
+
   --font-display: "Playfair Display", serif;
   --font-body: "Lora", serif;
   --font-sans: "Inter", sans-serif;
@@ -21,49 +21,50 @@
 
 @layer base {
   :root {
-    --color-bg-primary: #FAFAF7;
-    --color-bg-secondary: #F3F0E8;
-    --color-bg-card: #FFFFFF;
-    --color-accent-gold: #C9A84C;
-    --color-accent-brown: #8B6F47;
-    --color-accent-sage: #7A9E7E;
-    --color-text-primary: #2C2416;
-    --color-text-secondary: #6B5D4F;
-    --color-text-muted: #A89880;
-    --color-border: rgba(139, 111, 71, 0.15);
-    --color-shadow: rgba(44, 36, 22, 0.08);
+    --color-bg-primary: #f2eee6;
+    --color-bg-secondary: #e6dfd2;
+    --color-bg-card: #f8f5ee;
+    --color-accent-gold: #a88a54;
+    --color-accent-brown: #6e5940;
+    --color-accent-sage: #6d7b6f;
+    --color-text-primary: #211a13;
+    --color-text-secondary: #4e4338;
+    --color-text-muted: #817365;
+    --color-border: rgba(74, 58, 42, 0.2);
+    --color-shadow: rgba(21, 16, 12, 0.1);
   }
 
   .theme-sepia {
-    --color-bg-primary: #F4ECD8;
-    --color-bg-secondary: #E9DFCE;
-    --color-bg-card: #FDF6E3;
-    --color-accent-gold: #AF8B31;
-    --color-accent-brown: #7A5C34;
-    --color-text-primary: #4A3E30;
-    --color-text-secondary: #746356;
-    --color-text-muted: #A19183;
-    --color-border: rgba(122, 92, 52, 0.15);
-    --color-shadow: rgba(74, 62, 48, 0.08);
+    --color-bg-primary: #ebe2d2;
+    --color-bg-secondary: #ddd1bc;
+    --color-bg-card: #f3ebdc;
+    --color-accent-gold: #9f7f4a;
+    --color-accent-brown: #5f4a31;
+    --color-text-primary: #2f2419;
+    --color-text-secondary: #5d4f3f;
+    --color-text-muted: #8a7a68;
+    --color-border: rgba(95, 74, 49, 0.18);
+    --color-shadow: rgba(47, 36, 25, 0.12);
   }
 
   .theme-dark {
-    --color-bg-primary: #121212;
-    --color-bg-secondary: #1E1E1E;
-    --color-bg-card: #181818;
-    --color-accent-gold: #D4AF37;
-    --color-accent-brown: #9E8256;
-    --color-text-primary: #E0E0E0;
-    --color-text-secondary: #A0A0A0;
-    --color-text-muted: #6B6B6B;
-    --color-border: rgba(255, 255, 255, 0.10);
-    --color-shadow: rgba(0, 0, 0, 0.3);
+    --color-bg-primary: #111214;
+    --color-bg-secondary: #1a1c1f;
+    --color-bg-card: #15171a;
+    --color-accent-gold: #9b7d4c;
+    --color-accent-brown: #8c775e;
+    --color-text-primary: #e6e1d8;
+    --color-text-secondary: #b6aea3;
+    --color-text-muted: #7e766d;
+    --color-border: rgba(214, 199, 174, 0.14);
+    --color-shadow: rgba(0, 0, 0, 0.35);
   }
 
   body {
     background-color: var(--color-bg-primary);
     color: var(--color-text-primary);
     font-family: var(--font-sans);
+    text-rendering: optimizeLegibility;
     transition: background-color 0.3s ease, color 0.3s ease;
   }
 }
