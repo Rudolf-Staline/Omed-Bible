@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Play, Pause, X } from 'lucide-react';
-import { fetchChapter } from '../utils/bibleApi';
-import { BIBLE_BOOKS, FEATURED_TRANSLATIONS } from '../utils/bibleApi';
+import { getChapter, BIBLE_BOOKS, FEATURED_TRANSLATIONS } from '../utils/bibleApi';
+import type { Verse } from '../utils/bibleApi';
 
 interface AudioPlayerProps {
   translation: string;
@@ -14,47 +14,45 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({ translation, bookId, c
   const [isPlaying, setIsPlaying] = useState(false);
   const [speed, setSpeed] = useState(1.0);
   const [isLoading, setIsLoading] = useState(true);
-  
+
   const utteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
 
   useEffect(() => {
     let active = true;
     setIsLoading(true);
-    
-    // Stop any ongoing speech
     window.speechSynthesis.cancel();
 
-    fetchChapter(translation, bookId, chapter).then(verses => {
-      if (!active) return;
-      const text = verses.map(v => v.text).join(' ');
-      
-      const isEnglish = ['kjv', 'web', 'bbe'].includes(translation);
-      const u = new SpeechSynthesisUtterance(text);
-      u.lang = isEnglish ? 'en-US' : 'fr-FR';
-      u.rate = speed;
-      
-      u.onend = () => setIsPlaying(false);
-      u.onerror = (e) => {
-        console.error("SpeechSynthesis error:", e);
-        setIsPlaying(false);
-      };
-      
-      utteranceRef.current = u;
-      setIsLoading(false);
-      
-      // Auto-play when ready
-      window.speechSynthesis.speak(u);
-      setIsPlaying(true);
-    }).catch(err => {
-      console.error(err);
-      setIsLoading(false);
-    });
+    getChapter(translation, bookId, chapter)
+      .then((verses: Verse[]) => {
+        if (!active) return;
+        const text = verses.map((v) => v.text).join(' ');
+
+        const isEnglish = ['kjv', 'web', 'bbe'].includes(translation);
+        const u = new SpeechSynthesisUtterance(text);
+        u.lang = isEnglish ? 'en-US' : 'fr-FR';
+        u.rate = speed;
+
+        u.onend = () => setIsPlaying(false);
+        u.onerror = (e) => {
+          console.error('SpeechSynthesis error:', e);
+          setIsPlaying(false);
+        };
+
+        utteranceRef.current = u;
+        setIsLoading(false);
+        window.speechSynthesis.speak(u);
+        setIsPlaying(true);
+      })
+      .catch((err: unknown) => {
+        console.error(err);
+        setIsLoading(false);
+      });
 
     return () => {
       active = false;
       window.speechSynthesis.cancel();
     };
-  }, [translation, bookId, chapter]); // Intentionally omitting speed to not restart from beginning on speed change
+  }, [translation, bookId, chapter]);
 
   const togglePlay = () => {
     if (isPlaying) {
@@ -69,24 +67,14 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({ translation, bookId, c
   const cycleSpeed = () => {
     const nextSpeed = speed === 1.0 ? 1.25 : speed === 1.25 ? 1.5 : speed === 1.5 ? 2.0 : 1.0;
     setSpeed(nextSpeed);
-    
-    // Changing speed requires recreating the utterance for it to take effect in most browsers.
-    // However, to keep it simple, we just save the setting state. It will apply cleanly on the next chapter.
-    // For immediate effect (optional): we could cancel and restart, but it restarts from the beginning.
-    toastSpeed(nextSpeed);
-  };
-  
-  const toastSpeed = (s: number) => {
-    // If you had a toast here...
   };
 
-  const bookName = BIBLE_BOOKS.find(b => b.id === bookId)?.name || bookId;
-  const translationName = FEATURED_TRANSLATIONS.find(t => t.id === translation)?.short || translation;
+  const bookName = BIBLE_BOOKS.find((b) => b.id === bookId)?.name || bookId;
+  const translationName = FEATURED_TRANSLATIONS.find((t) => t.id === translation)?.short || translation;
 
   return (
     <div className="fixed bottom-0 left-0 right-0 h-16 bg-bg-card border-t border-border shadow-[0_-4px_20px_rgba(0,0,0,0.05)] z-50 flex flex-col">
       <div className="flex-1 flex items-center justify-between px-4 sm:px-6 max-w-4xl mx-auto w-full">
-        {/* Left: Info */}
         <div className="flex-1 flex items-center min-w-0">
           <div className="truncate">
             <h4 className="font-display font-semibold text-text-primary truncate">
@@ -96,9 +84,8 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({ translation, bookId, c
           </div>
         </div>
 
-        {/* Center: Controls */}
         <div className="flex-1 flex items-center justify-center gap-4">
-          <button 
+          <button
             onClick={togglePlay}
             disabled={isLoading}
             className={`w-10 h-10 rounded-full flex items-center justify-center transition-colors shadow-sm
@@ -108,9 +95,8 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({ translation, bookId, c
           </button>
         </div>
 
-        {/* Right: Actions */}
         <div className="flex-1 flex items-center justify-end gap-3">
-          <button 
+          <button
             onClick={cycleSpeed}
             title="S'applique au prochain chapitre"
             className="text-xs font-mono font-medium text-text-secondary hover:text-text-primary w-10 text-right"
