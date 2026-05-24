@@ -62,11 +62,11 @@ L’application suit une direction de design calme et lisible, centrée sur le t
 
 | Traduction | Code | Langue | Source API |
 |---|---|---|---|
-| Louis Segond 1910 | `LSG` | Français | [api.getbible.net](https://api.getbible.net) |
-| Darby (Français) | `DBY` | Français | [api.getbible.net](https://api.getbible.net) |
-| Martin 1744 | `MAR` | Français | [api.getbible.net](https://api.getbible.net) |
+| Louis Segond 1910 | `LSG` | Français | [bolls.life](https://bolls.life) |
+| Darby (Français) | `DBY` | Français | [bolls.life](https://bolls.life) |
 | King James Version | `KJV` | English | [bible-api.com](https://bible-api.com) |
 | World English Bible | `WEB` | English | [bible-api.com](https://bible-api.com) |
+| Bible in Basic English | `BBE` | English | [bible-api.com](https://bible-api.com) |
 | New International Version | `NIV` | English | [API.Bible](https://scripture.api.bible) |
 
 ---
