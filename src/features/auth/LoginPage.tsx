@@ -57,12 +57,17 @@ export const LoginPage: React.FC = () => {
             <p className="mt-2 text-sm text-text-secondary">Accédez à vos passages, notes et préférences synchronisés.</p>
 
             <button
+              type="button"
               onClick={() => handleLogin()}
               className="mt-8 w-full flex items-center justify-center gap-3 rounded-md border border-border bg-bg-secondary px-6 py-3 text-sm font-medium text-text-primary transition-colors hover:bg-bg-secondary/70"
             >
               <img src="https://www.google.com/favicon.ico" alt="Google" className="h-5 w-5" />
               Continuer avec Google
             </button>
+
+            <p className="mt-5 text-xs leading-relaxed text-text-secondary/80">
+              Synchronisation privée via Google Drive AppData. Vos données restent liées à votre compte Google.
+            </p>
           </div>
         </section>
       </div>
