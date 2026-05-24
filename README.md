@@ -32,7 +32,7 @@ Le projet propose une expérience de lecture biblique complète, pensée pour un
 - Lecteur audio intégré
 
 ### Recherche
-- Recherche de versets par mots-clés (API.Bible pour NIV/ESV/NLT)
+- Recherche de versets par mots-clés
 
 ### Annotation et organisation
 - Marque-pages pour sauvegarder des versets
