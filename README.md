@@ -138,7 +138,7 @@ Le projet est déployé automatiquement sur **Vercel** à chaque push sur la bra
 - `/bible-proxy/` : proxy vers API.Bible (NIV, ESV, NLT)
 - `/:path*` : redirection SPA vers `index.html`
 
-Les traductions françaises (LSG, Darby, Martin) appellent directement `api.getbible.net` (CORS natif).
+Les traductions françaises ne passent pas par ces rewrites Vercel : selon la traduction, les appels sont effectués directement côté client vers la source configurée (par exemple `bolls.life` pour LSG et Darby).
 
 ---
 
