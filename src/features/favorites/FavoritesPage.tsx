@@ -18,7 +18,7 @@ export const FavoritesPage: React.FC = () => {
     e.stopPropagation();
     try {
       await navigator.clipboard.writeText(`« ${text} »\n${reference}`);
-      toast.success('Texte copié !');
+      toast.success('Passage copié.');
     } catch (err) {
       console.error('Failed to copy', err);
     }
@@ -28,13 +28,13 @@ export const FavoritesPage: React.FC = () => {
     return (
       <div className="max-w-3xl mx-auto py-20 text-center">
         <Heart size={48} className="mx-auto text-text-muted mb-4 opacity-50" />
-        <h2 className="font-display text-2xl font-semibold text-text-primary mb-2">Aucun favori</h2>
-        <p className="text-text-secondary">Vos versets préférés apparaîtront ici.</p>
+        <h2 className="font-display text-2xl font-semibold text-text-primary mb-2">Aucun passage sauvegardé</h2>
+        <p className="text-text-secondary">Aucun passage sauvegardé pour le moment.</p>
         <button
           onClick={() => navigate('/')}
           className="mt-6 px-6 py-2 bg-bg-secondary text-text-primary rounded-lg font-medium hover:bg-border transition-colors"
         >
-          Commencer à lire
+          Ouvrir la lecture
         </button>
       </div>
     );
@@ -47,7 +47,7 @@ export const FavoritesPage: React.FC = () => {
     <div className="max-w-3xl mx-auto py-8">
       <h1 className="font-display text-3xl font-bold mb-8 text-text-primary flex items-center gap-3">
         <Heart className="text-accent-gold" />
-        Favoris
+        Marque-pages
       </h1>
 
       <div className="space-y-4">
@@ -55,7 +55,7 @@ export const FavoritesPage: React.FC = () => {
           const reference = `${verse.bookId.charAt(0).toUpperCase() + verse.bookId.slice(1)} ${verse.chapter}:${verse.verse}`;
           
           return (
-            <div key={verse.id} className="bg-bg-card border border-border rounded-xl p-6 group hover:shadow-sm transition-all">
+            <div key={verse.id} className="bg-bg-card border border-border rounded-xl p-6 group transition-colors hover:bg-bg-primary/40">
               <div className="flex justify-between items-start mb-4">
                 <div className="flex items-center gap-2">
                   <h3 className="font-display font-semibold text-lg text-text-primary">{reference}</h3>
@@ -68,15 +68,15 @@ export const FavoritesPage: React.FC = () => {
                   <button 
                     onClick={(e) => handleShare(verse.text, reference, e)}
                     className="p-1.5 text-text-muted hover:text-accent-gold rounded transition-colors"
-                    title="Partager"
+                    title="Copier"
                   >
                     <Share2 size={16} />
                   </button>
                   <button 
                     onClick={() => {
-                      if(window.confirm('Retirer ce verset des favoris ?')) {
+                      if(window.confirm('Retirer ce passage sauvegardé ?')) {
                         removeFavorite(verse.id);
-                        toast('Retiré des favoris', { icon: '💔' });
+                        toast.success('Passage retiré des marque-pages.');
                       }
                     }}
                     className="p-1.5 text-text-muted hover:text-red-500 rounded transition-colors"
