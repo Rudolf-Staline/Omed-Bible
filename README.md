@@ -1,32 +1,71 @@
 # Omed Scripture
 
-> Lire. Méditer. Retenir.
-
-Omed Scripture est une application web moderne de lecture et d’étude biblique. Elle offre un environnement de lecture sobre, des outils d’annotation, la comparaison de traductions et une synchronisation cloud via Google Drive.
+Omed Scripture est une application web moderne de lecture, d’annotation et d’étude biblique. Elle propose une expérience sobre centrée sur le texte biblique, avec plusieurs traductions, un mode comparaison, des outils personnels d’organisation et une synchronisation cloud via Google Drive.
 
 **Application :** https://omed-bible.vercel.app
 
 ---
 
+## Vue d’ensemble
+
+Omed Scripture vise à offrir un espace calme pour lire, étudier et méditer les Écritures. L’application rassemble les fonctions essentielles d’un lecteur biblique personnel dans une interface lisible, structurée et pensée pour la concentration.
+
+Fonctions principales :
+
+- lecture par livres et chapitres ;
+- traductions françaises et anglaises ;
+- comparaison de traductions côte à côte ;
+- lecture audio des chapitres ;
+- recherche de versets ;
+- notes personnelles ;
+- marque-pages ;
+- surlignages ;
+- parcours de lecture ;
+- synchronisation Google Drive.
+
+---
+
 ## Fonctionnalités
 
-### Lecture et étude
-- Lecteur de chapitres avec navigation fluide par livre et chapitre.
-- 6 traductions disponibles (français et anglais).
-- Comparaison côte à côte de deux traductions.
-- Lecture audio des chapitres.
+### Lecture biblique
 
-### Outils personnels
-- Marque-pages de versets.
-- Surlignages et annotations.
-- Notes personnelles.
+- Navigation fluide entre livres et chapitres.
+- Six traductions disponibles en français et en anglais.
+- Comparaison simultanée de deux traductions.
+- Lecteur audio intégré pour écouter un chapitre.
 
-### Organisation
-- Parcours de lecture avec suivi de progression.
+### Recherche
 
-### Synchronisation
-- Authentification Google.
-- Synchronisation Google Drive des marque-pages, notes, surlignages, parcours et position de lecture.
+- Recherche de versets par mots-clés.
+- Accès rapide aux passages trouvés.
+
+### Annotation et organisation
+
+- Marque-pages pour sauvegarder des versets importants.
+- Surlignages avec plusieurs couleurs.
+- Notes personnelles associées aux versets.
+
+### Parcours de lecture
+
+- Parcours de lecture biblique avec suivi de progression.
+- Vue détaillée des étapes de lecture.
+
+### Synchronisation Google Drive
+
+- Authentification Google Sign-In.
+- Synchronisation des marque-pages, notes, surlignages, parcours et position de lecture.
+- Stockage des données applicatives via Google Drive AppData.
+
+### Préférences
+
+- Personnalisation de l’expérience de lecture.
+- Réglages visuels et options d’affichage selon les paramètres disponibles dans l’application.
+
+---
+
+## Design direction
+
+L’application suit une direction visuelle calme, adulte et lisible. L’objectif est de réduire la distraction, de renforcer le confort de lecture et de donner au texte biblique une place centrale. L’interface privilégie la sobriété, l’espacement, une hiérarchie claire et des éléments d’action discrets.
 
 ---
 
@@ -45,23 +84,26 @@ Omed Scripture est une application web moderne de lecture et d’étude biblique
 
 ## Stack technique
 
-- React 19
-- TypeScript
-- Vite 8
-- Tailwind CSS 4
-- React Router 7
-- Zustand
-- Framer Motion
-- Lucide React
-- React Hot Toast
-- @react-oauth/google
-- Vercel
+| Technologie | Rôle |
+|---|---|
+| React 19 | Interface utilisateur |
+| TypeScript | Typage statique |
+| Vite 8 | Build et serveur de développement |
+| Tailwind CSS 4 | Système de styles utilitaires |
+| React Router 7 | Routage côté client |
+| Zustand | Gestion d’état global |
+| Framer Motion | Animations d’interface |
+| Lucide React | Icônes |
+| React Hot Toast | Notifications |
+| @react-oauth/google | Authentification Google |
+| Vercel | Déploiement et hébergement |
 
 ---
 
 ## Installation locale
 
 ### Prérequis
+
 - Node.js >= 18
 - npm >= 9
 
@@ -76,9 +118,9 @@ npm run dev
 
 Application locale : `http://localhost:5173`
 
-### Variables d’environnement (optionnel)
+### Variables d’environnement
 
-Pour les traductions API.Bible (NIV, ESV, NLT), créez un fichier `.env` :
+Pour activer les traductions dépendant d’API.Bible, créez un fichier `.env` à la racine du projet :
 
 ```env
 VITE_BIBLE_API_KEY=votre_cle_api_bible
@@ -106,10 +148,11 @@ src/
 
 Le projet est déployé sur Vercel à chaque push sur `main`.
 
-Configuration de proxy (`vercel.json`) :
-- `/bible-api/` vers bible-api.com
-- `/bible-proxy/` vers API.Bible
-- `/:path*` vers `index.html` (SPA)
+Configuration de proxy dans `vercel.json` :
+
+- `/bible-api/` vers bible-api.com ;
+- `/bible-proxy/` vers API.Bible ;
+- `/:path*` vers `index.html` pour le routage SPA.
 
 ---
 
