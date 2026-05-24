@@ -1,145 +1,128 @@
-# 📖 Omed-Bible
+# Omed Scripture
 
-> *La Parole, toujours avec vous.*
+Omed Scripture est une application web moderne de lecture, d’annotation et d’étude biblique. Elle permet de lire la Bible dans plusieurs traductions, de comparer les textes, d’écouter les chapitres en audio et de conserver ses repères d’étude grâce à une synchronisation cloud via Google Drive.
 
-Application web de lecture biblique moderne, construite avec React et déployée sur Vercel. Omed-Bible permet de lire, comparer et étudier la Bible dans plusieurs traductions, avec synchronisation cloud via Google Drive.
-
-🔗 **[Accéder à l'application](https://omed-bible.vercel.app)**
+**Application en ligne :** https://omed-bible.vercel.app
 
 ---
 
-## ✨ Fonctionnalités
+## Vue d’ensemble
 
-### 📚 Lecture
-- **Lecteur de chapitres** avec navigation fluide entre livres et chapitres
-- **6 traductions disponibles** — françaises et anglaises
-- **Comparaison côte à côte** de deux traductions simultanément
-- **Lecteur audio** intégré pour l'écoute des chapitres
+Le projet propose une expérience de lecture biblique complète, pensée pour un usage personnel quotidien :
 
-### 🔍 Recherche
-- Recherche de versets par mots-clés (via API.Bible pour NIV/ESV/NLT)
-
-### ⭐ Favoris & Notes
-- **Favoris** — sauvegardez vos versets préférés
-- **Surlignage** de versets avec couleurs personnalisables
-- **Notes personnelles** associées aux versets
-
-### 📅 Plans de lecture
-- Plans de lecture biblique avec suivi de progression
-- Détail de chaque plan avec chapitres jour par jour
-
-### ☁️ Synchronisation
-- **Google Sign-In** pour l'authentification
-- **Google Drive** — synchronisation automatique des favoris, notes, surlignages, plans et position de lecture entre appareils
-
-### ⚙️ Paramètres
-- Personnalisation de l'expérience de lecture
+- lecture par livres et chapitres
+- traductions françaises et anglaises
+- comparaison de traductions côte à côte
+- audio des chapitres
+- recherche de versets
+- notes personnelles
+- marque-pages
+- surlignages
+- parcours de lecture
+- synchronisation Google Drive
 
 ---
 
-## 🌐 Traductions disponibles
+## Fonctionnalités
+
+### Lecture biblique
+- Navigation fluide entre livres et chapitres
+- 6 traductions disponibles
+- Comparaison simultanée de deux traductions
+- Lecteur audio intégré
+
+### Recherche
+- Recherche de versets par mots-clés (API.Bible pour NIV/ESV/NLT)
+
+### Annotation et organisation
+- Marque-pages pour sauvegarder des versets
+- Surlignages avec couleurs personnalisables
+- Notes personnelles associées aux versets
+
+### Parcours de lecture
+- Parcours de lecture biblique avec suivi de progression
+- Vue détaillée des chapitres jour par jour
+
+### Synchronisation Google Drive
+- Authentification Google Sign-In
+- Synchronisation automatique des marque-pages, notes, surlignages, parcours et position de lecture entre appareils
+
+### Paramètres
+- Personnalisation de l’expérience de lecture
+
+---
+
+## Design direction
+
+L’application suit une direction de design calme et lisible, centrée sur le texte biblique. L’objectif est de réduire la distraction visuelle, de faciliter la concentration et d’offrir un cadre adapté à la lecture, à la méditation et à l’étude.
+
+---
+
+## Traductions disponibles
 
 | Traduction | Code | Langue | Source API |
 |---|---|---|---|
-| Louis Segond 1910 | `LSG` | 🇫🇷 Français | [api.getbible.net](https://api.getbible.net) |
-| Darby (Français) | `DBY` | 🇫🇷 Français | [api.getbible.net](https://api.getbible.net) |
-| Martin 1744 | `MAR` | 🇫🇷 Français | [api.getbible.net](https://api.getbible.net) |
-| King James Version | `KJV` | 🇬🇧 English | [bible-api.com](https://bible-api.com) |
-| World English Bible | `WEB` | 🇬🇧 English | [bible-api.com](https://bible-api.com) |
-| New International Version | `NIV` | 🇬🇧 English | [API.Bible](https://scripture.api.bible) |
+| Louis Segond 1910 | `LSG` | Français | [api.getbible.net](https://api.getbible.net) |
+| Darby (Français) | `DBY` | Français | [api.getbible.net](https://api.getbible.net) |
+| Martin 1744 | `MAR` | Français | [api.getbible.net](https://api.getbible.net) |
+| King James Version | `KJV` | English | [bible-api.com](https://bible-api.com) |
+| World English Bible | `WEB` | English | [bible-api.com](https://bible-api.com) |
+| New International Version | `NIV` | English | [API.Bible](https://scripture.api.bible) |
 
 ---
 
-## 🛠️ Stack technique
+## Stack technique
 
 | Technologie | Rôle |
 |---|---|
 | **React 19** | Framework UI |
 | **TypeScript** | Typage statique |
-| **Vite 8** | Build & dev server |
+| **Vite 8** | Build et serveur de développement |
 | **Tailwind CSS 4** | Styles utilitaires |
 | **React Router 7** | Routage SPA |
-| **Zustand** | État global (stores) |
-| **Framer Motion** | Animations |
+| **Zustand** | État global |
+| **Framer Motion** | Animations d’interface |
 | **Lucide React** | Icônes |
 | **React Hot Toast** | Notifications |
 | **@react-oauth/google** | Authentification Google |
-| **Vercel** | Déploiement & hébergement |
+| **Vercel** | Déploiement et hébergement |
 
 ---
 
-## 🚀 Installation locale
+## Installation locale
 
 ### Prérequis
 - **Node.js** ≥ 18
 - **npm** ≥ 9
 
-### Lancer le projet
+### Démarrage
 
 ```bash
-# Cloner le dépôt
 git clone https://github.com/Rudolf-Staline/Omed-Bible.git
 cd Omed-Bible
-
-# Installer les dépendances
 npm install
-
-# Lancer le serveur de développement
 npm run dev
 ```
 
-L'application sera accessible sur `http://localhost:5173`.
+L’application sera accessible sur `http://localhost:5173`.
 
-### Variables d'environnement (optionnel)
+### Variables d’environnement (optionnel)
 
-Pour utiliser les traductions API.Bible (NIV, ESV, NLT), créez un fichier `.env` :
+Pour activer les traductions API.Bible (NIV, ESV, NLT), créez un fichier `.env` :
 
 ```env
 VITE_BIBLE_API_KEY=votre_cle_api_bible
 ```
 
-> Obtenez une clé gratuite sur [scripture.api.bible](https://scripture.api.bible).
+Clé API disponible sur [scripture.api.bible](https://scripture.api.bible).
 
 ---
 
-## 📁 Structure du projet
-
-```
-src/
-├── components/          # Composants réutilisables
-│   ├── AudioPlayer.tsx  # Lecteur audio intégré
-│   ├── Layout.tsx       # Layout principal avec sidebar
-│   └── Sidebar.tsx      # Navigation latérale
-├── features/            # Pages et fonctionnalités
-│   ├── auth/            # Authentification Google
-│   ├── favorites/       # Gestion des favoris
-│   ├── notes/           # Notes personnelles
-│   ├── plans/           # Plans de lecture
-│   ├── reader/          # Lecteur biblique principal
-│   ├── search/          # Recherche de versets
-│   └── settings/        # Paramètres
-├── store/               # State management (Zustand)
-│   ├── useAuthStore.ts
-│   ├── useBibleStore.ts
-│   ├── useFavoritesStore.ts
-│   ├── useHighlightsStore.ts
-│   ├── useNotesStore.ts
-│   ├── usePlansStore.ts
-│   └── useSettingsStore.ts
-├── utils/
-│   ├── bibleApi.ts      # Logique d'appels API Bible
-│   └── driveSync.ts     # Synchronisation Google Drive
-├── App.tsx              # Routes de l'application
-└── main.tsx             # Point d'entrée
-```
-
----
-
-## 🌍 Déploiement
+## Déploiement Vercel
 
 Le projet est déployé automatiquement sur **Vercel** à chaque push sur la branche `main`.
 
-### Configuration Vercel (`vercel.json`)
+### Configuration (`vercel.json`)
 
 ```json
 {
@@ -151,20 +134,14 @@ Le projet est déployé automatiquement sur **Vercel** à chaque push sur la bra
 }
 ```
 
-- **`/bible-api/`** → Proxy vers bible-api.com (traductions anglaises)
-- **`/bible-proxy/`** → Proxy vers API.Bible (NIV, ESV, NLT)
-- **`/:path*`** → Catch-all SPA vers `index.html`
+- `/bible-api/` : proxy vers bible-api.com (traductions anglaises)
+- `/bible-proxy/` : proxy vers API.Bible (NIV, ESV, NLT)
+- `/:path*` : redirection SPA vers `index.html`
 
-> Les traductions françaises (LSG, Darby, Martin) appellent directement `api.getbible.net` qui supporte CORS nativement.
-
----
-
-## 📄 Licence
-
-Ce projet est un projet personnel à but éducatif et spirituel.
+Les traductions françaises (LSG, Darby, Martin) appellent directement `api.getbible.net` (CORS natif).
 
 ---
 
-<p align="center">
-  <em>Fait avec ❤️ et foi</em>
-</p>
+## Licence
+
+Projet personnel à but éducatif et spirituel.
