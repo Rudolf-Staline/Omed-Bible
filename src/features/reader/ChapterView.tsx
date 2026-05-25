@@ -5,6 +5,8 @@ import { useSettingsStore } from '../../store/useSettingsStore';
 import { useHighlightsStore } from '../../store/useHighlightsStore';
 import type { HighlightColor } from '../../store/useHighlightsStore';
 import { VerseActions } from './VerseActions';
+import { cacheChapter, getCachedChapter } from '../../utils/chapterCache';
+import { useOnlineStatus } from '../../utils/useOnlineStatus';
 import clsx from 'clsx';
 
 interface ChapterViewProps {
@@ -18,6 +20,7 @@ export const ChapterView: React.FC<ChapterViewProps> = ({ translation, bookId, c
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedVerseId, setSelectedVerseId] = useState<string | null>(null);
+  const isOnline = useOnlineStatus();
 
   const settings = useSettingsStore((state) => state.settings);
   const highlights = useHighlightsStore((state) => state.highlights);
@@ -27,18 +30,38 @@ export const ChapterView: React.FC<ChapterViewProps> = ({ translation, bookId, c
     const fetchChapter = async () => {
       setLoading(true);
       setError(null);
+
+      const cached = getCachedChapter(translation, bookId, chapter);
+      if (!isOnline && cached) {
+        setVerses(cached);
+        setLoading(false);
+        return;
+      }
+
+      if (!isOnline && !cached) {
+        setVerses([]);
+        setError('Ce chapitre n’est pas encore disponible sans connexion.');
+        setLoading(false);
+        return;
+      }
+
       try {
         const data = await getChapter(translation, bookId, chapter);
+        cacheChapter(translation, bookId, chapter, data);
         if (mounted) setVerses(data);
       } catch (err: any) {
-        if (mounted) setError(err.message || 'Erreur lors du chargement du chapitre');
+        if (cached) {
+          if (mounted) setVerses(cached);
+        } else if (mounted) {
+          setError(err.message || 'Erreur lors du chargement du chapitre');
+        }
       } finally {
         if (mounted) setLoading(false);
       }
     };
     fetchChapter();
     return () => { mounted = false; };
-  }, [translation, bookId, chapter]);
+  }, [translation, bookId, chapter, isOnline]);
 
   if (loading) return <div className="py-20 text-center text-text-muted animate-pulse">Chargement en cours...</div>;
   if (error) return <div className="py-20 text-center text-red-500">{error}</div>;
