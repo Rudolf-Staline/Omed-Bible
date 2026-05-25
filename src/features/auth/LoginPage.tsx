@@ -40,7 +40,7 @@ export const LoginPage: React.FC = () => {
         </div>
         
         <h1 className="font-display text-4xl font-semibold text-text-primary mb-3">
-          Omed-Bible
+          Omed Scripture
         </h1>
         <p className="font-body text-text-secondary italic mb-10 text-lg">
           La Parole, toujours avec vous.

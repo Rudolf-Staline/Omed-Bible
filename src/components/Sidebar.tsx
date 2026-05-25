@@ -11,11 +11,11 @@ export const Sidebar: React.FC = () => {
   const navigate = useNavigate();
 
   const navItems = [
-    { to: '/', icon: BookOpen, label: 'Lire' },
-    { to: '/search', icon: Search, label: 'Rechercher' },
-    { to: '/favorites', icon: Heart, label: 'Favoris' },
+    { to: '/', icon: BookOpen, label: 'Lecture' },
+    { to: '/search', icon: Search, label: 'Recherche' },
+    { to: '/favorites', icon: Heart, label: 'Marque-pages' },
     { to: '/notes', icon: Edit3, label: 'Notes' },
-    { to: '/plans', icon: Calendar, label: 'Plans de lecture' },
+    { to: '/plans', icon: Calendar, label: 'Parcours' },
   ];
 
   return (
@@ -23,7 +23,7 @@ export const Sidebar: React.FC = () => {
       <div className="p-6">
         <h1 className="font-display text-2xl font-semibold text-text-primary flex items-center gap-2 cursor-pointer" onClick={() => navigate('/')}>
           <BookOpen className="text-accent-gold" />
-          Omed-Bible
+          Omed Scripture
         </h1>
       </div>
 
@@ -87,7 +87,7 @@ export const Sidebar: React.FC = () => {
             }
           >
             <Settings size={18} />
-            Paramètres
+            Préférences
           </NavLink>
           
           <div className="flex items-center gap-3 px-3 py-2 text-sm font-medium text-text-muted">
