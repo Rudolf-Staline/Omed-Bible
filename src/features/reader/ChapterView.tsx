@@ -69,13 +69,24 @@ export const ChapterView: React.FC<ChapterViewProps> = ({ translation, bookId, c
     }
   };
 
+  const widthClasses = {
+    Narrow: 'max-w-xl',
+    Comfortable: 'max-w-2xl',
+    Wide: 'max-w-4xl',
+  };
+
+  const densityClasses = {
+    Compact: 'space-y-2',
+    Aired: 'space-y-4',
+  };
+
   return (
-    <div className={`max-w-2xl mx-auto pb-32 ${fontClass} ${sizeClasses[settings.fontSize]} ${leadingClasses[settings.lineHeight]}`}>
+    <div className={`${widthClasses[settings.readingWidth]} mx-auto pb-32 ${fontClass} ${sizeClasses[settings.fontSize]} ${leadingClasses[settings.lineHeight]}`}>
       <h2 className="font-display text-3xl font-bold mb-8 text-text-primary mt-4">
         {verses.length > 0 ? `${verses[0].book_name} ${chapter}` : `${bookId} ${chapter}`}
       </h2>
 
-      <div className="space-y-4">
+      <div className={densityClasses[settings.readingDensity]}>
         {verses.map((verse) => {
           const verseId = `${translation}-${bookId}-${chapter}-${verse.verse}`;
           const isSelected = selectedVerseId === verseId;
@@ -93,9 +104,11 @@ export const ChapterView: React.FC<ChapterViewProps> = ({ translation, bookId, c
                 highlight ? getHighlightStyle(highlight.color) : "group-hover:bg-bg-secondary",
                 isSelected ? "bg-bg-secondary ring-1 ring-accent-gold/30" : ""
               )}>
-                <sup className="font-mono text-xs text-accent-gold font-medium mr-1.5 align-top mt-1 inline-block select-none">
-                  {verse.verse}
-                </sup>
+                {settings.showVerseNumbers && (
+                  <sup className="font-mono text-xs text-accent-gold font-medium mr-1.5 align-top mt-1 inline-block select-none">
+                    {verse.verse}
+                  </sup>
+                )}
                 <span className="text-text-primary">
                   {verse.text}
                 </span>

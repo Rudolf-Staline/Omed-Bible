@@ -7,6 +7,8 @@ export type LineHeight = 'Normal' | 'Relaxed' | 'Large';
 export type FontFamily = 'Lora' | 'Inter';
 export type Theme = 'Light' | 'Sepia' | 'Dark';
 export type Language = 'Français' | 'English';
+export type ReadingWidth = 'Narrow' | 'Comfortable' | 'Wide';
+export type ReadingDensity = 'Compact' | 'Aired';
 
 export interface Settings {
   defaultTranslation: string;
@@ -15,6 +17,9 @@ export interface Settings {
   fontFamily: FontFamily;
   theme: Theme;
   language: Language;
+  readingWidth: ReadingWidth;
+  readingDensity: ReadingDensity;
+  showVerseNumbers: boolean;
 }
 
 interface SettingsState {
@@ -32,6 +37,9 @@ const DEFAULT_SETTINGS: Settings = {
   fontFamily: 'Lora',
   theme: 'Light',
   language: 'Français',
+  readingWidth: 'Comfortable',
+  readingDensity: 'Aired',
+  showVerseNumbers: true,
 };
 
 const getInitialSettings = (): Settings => {
@@ -57,12 +65,12 @@ export const useSettingsStore = create<SettingsState>((set) => ({
     set((state) => {
       const updated = { ...state.settings, ...newSettings };
       localStorage.setItem('omed_bible_settings', JSON.stringify(updated));
-      
+
       const token = useAuthStore.getState().token;
       if (token && state.synced) {
         syncFileToDrive(DRIVE_FILES.settings, updated, token).catch(console.error);
       }
-      
+
       return { settings: updated };
     }),
   loadSettings: (settings) => set({ settings }),
