@@ -1,4 +1,5 @@
 import React from 'react';
+import toast from 'react-hot-toast';
 import { useGoogleLogin } from '@react-oauth/google';
 import { useAuthStore } from '../../store/useAuthStore';
 import { Sun } from 'lucide-react';
@@ -25,8 +26,9 @@ export const LoginPage: React.FC = () => {
           tokenResponse.access_token
         );
         navigate('/');
-      } catch (error) {
-        console.error('Failed to fetch user info', error);
+      } catch {
+        console.error('Google sign-in failed while fetching profile.');
+        toast.error("Connexion Google impossible. Réessayez dans un instant.");
       }
     },
     scope: 'https://www.googleapis.com/auth/drive.appdata',

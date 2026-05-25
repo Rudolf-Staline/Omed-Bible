@@ -90,15 +90,30 @@ npm run dev
 
 L'application sera accessible sur `http://localhost:5173`.
 
-### Variables d'environnement (optionnel)
+### Variables d'environnement
 
-Pour utiliser les traductions API.Bible (NIV, ESV, NLT), créez un fichier `.env` :
+Créez un fichier `.env` à partir de `.env.example` :
+
+```bash
+cp .env.example .env
+```
+
+Variables **nécessaires** en production :
+
+```env
+VITE_GOOGLE_CLIENT_ID=votre_client_id_google.apps.googleusercontent.com
+```
+
+Variables **optionnelles** (fonctionnalités additionnelles) :
 
 ```env
 VITE_BIBLE_API_KEY=votre_cle_api_bible
 ```
 
-> Obtenez une clé gratuite sur [scripture.api.bible](https://scripture.api.bible).
+- `VITE_GOOGLE_CLIENT_ID` : active Google Sign-In et la synchronisation Drive.
+- `VITE_BIBLE_API_KEY` : active les traductions API.Bible (NIV, ESV, NLT). Sans cette variable, les traductions non-API.Bible continuent de fonctionner.
+
+> Obtenez une clé API.Bible sur [scripture.api.bible](https://scripture.api.bible).
 
 ---
 
@@ -156,6 +171,16 @@ Le projet est déployé automatiquement sur **Vercel** à chaque push sur la bra
 - **`/:path*`** → Catch-all SPA vers `index.html`
 
 > Les traductions françaises (LSG, Darby, Martin) appellent directement `api.getbible.net` qui supporte CORS nativement.
+
+### Variables sur Vercel
+
+Dans **Project Settings → Environment Variables** sur Vercel, configurez au minimum :
+
+- `VITE_GOOGLE_CLIENT_ID` (Production, Preview, Development)
+- `VITE_BIBLE_API_KEY` (optionnel selon les traductions souhaitées)
+
+Puis redéployez l'application après modification des variables.
+
 
 ---
 

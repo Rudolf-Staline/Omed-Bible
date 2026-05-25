@@ -63,8 +63,8 @@ export const SettingsPage: React.FC = () => {
       // Si sync = on, on active la synchro automatique
       setSynced(true);
       toast.success("Synchronisation réussie !");
-    } catch (err) {
-      console.error(err);
+    } catch {
+      console.error('Drive sync failed.');
       toast.error("Échec de la synchronisation.");
     } finally {
       setSyncing(false);
