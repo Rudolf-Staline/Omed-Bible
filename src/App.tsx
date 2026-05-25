@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { useAuthStore } from './store/useAuthStore';
 import { LoginPage } from './features/auth/LoginPage';
 import { Layout } from './components/Layout';
@@ -17,11 +17,8 @@ import { useHighlightsStore } from './store/useHighlightsStore';
 import { useNotesStore } from './store/useNotesStore';
 import { usePlansStore } from './store/usePlansStore';
 import { syncFileFromDrive, DRIVE_FILES } from './utils/driveSync';
+import { HomePage } from './features/home/HomePage';
 
-function RootRedirect() {
-  const { translation, bookId, chapter } = useBibleStore();
-  return <Navigate to={`/read/${translation}/${bookId}/${chapter}`} replace />;
-}
 
 function App() {
   const restoreSession = useAuthStore((state) => state.restoreSession);
@@ -87,7 +84,7 @@ function App() {
         <Route path="/login" element={<LoginPage />} />
         
         <Route element={<Layout />}>
-          <Route path="/" element={<RootRedirect />} />
+          <Route path="/" element={<HomePage />} />
           <Route path="/read/:translation/:bookId/:chapter" element={<ReaderPage />} />
           <Route path="/search" element={<SearchPage />} />
           <Route path="/favorites" element={<FavoritesPage />} />

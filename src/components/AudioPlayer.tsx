@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Play, Pause, X } from 'lucide-react';
-import { fetchChapter } from '../utils/bibleApi';
-import { BIBLE_BOOKS, FEATURED_TRANSLATIONS } from '../utils/bibleApi';
+import { getChapter, BIBLE_BOOKS, FEATURED_TRANSLATIONS, type Verse } from '../utils/bibleApi';
 
 interface AudioPlayerProps {
   translation: string;
@@ -24,9 +23,9 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({ translation, bookId, c
     // Stop any ongoing speech
     window.speechSynthesis.cancel();
 
-    fetchChapter(translation, bookId, chapter).then(verses => {
+    getChapter(translation, bookId, chapter).then((verses: Verse[]) => {
       if (!active) return;
-      const text = verses.map(v => v.text).join(' ');
+      const text = verses.map((verse) => verse.text).join(' ');
       
       const isEnglish = ['kjv', 'web', 'bbe'].includes(translation);
       const u = new SpeechSynthesisUtterance(text);
@@ -45,7 +44,7 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({ translation, bookId, c
       // Auto-play when ready
       window.speechSynthesis.speak(u);
       setIsPlaying(true);
-    }).catch(err => {
+    }).catch((err: unknown) => {
       console.error(err);
       setIsLoading(false);
     });
@@ -76,7 +75,7 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({ translation, bookId, c
     toastSpeed(nextSpeed);
   };
   
-  const toastSpeed = (s: number) => {
+  const toastSpeed = (_speedValue: number) => {
     // If you had a toast here...
   };
 
