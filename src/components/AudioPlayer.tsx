@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Play, Pause, X } from 'lucide-react';
-import { fetchChapter } from '../utils/bibleApi';
-import { BIBLE_BOOKS, FEATURED_TRANSLATIONS } from '../utils/bibleApi';
+import { getChapter, BIBLE_BOOKS, FEATURED_TRANSLATIONS } from '../utils/bibleApi';
+import type { Verse } from '../utils/bibleApi';
 
 interface AudioPlayerProps {
   translation: string;
@@ -24,9 +24,9 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({ translation, bookId, c
     // Stop any ongoing speech
     window.speechSynthesis.cancel();
 
-    fetchChapter(translation, bookId, chapter).then(verses => {
+    getChapter(translation, bookId, chapter).then((verses: Verse[]) => {
       if (!active) return;
-      const text = verses.map(v => v.text).join(' ');
+      const text = verses.map((v) => v.text).join(' ');
       
       const isEnglish = ['kjv', 'web', 'bbe'].includes(translation);
       const u = new SpeechSynthesisUtterance(text);
@@ -45,7 +45,7 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({ translation, bookId, c
       // Auto-play when ready
       window.speechSynthesis.speak(u);
       setIsPlaying(true);
-    }).catch(err => {
+    }).catch((err: unknown) => {
       console.error(err);
       setIsLoading(false);
     });
@@ -76,7 +76,7 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({ translation, bookId, c
     toastSpeed(nextSpeed);
   };
   
-  const toastSpeed = (s: number) => {
+  const toastSpeed = (_s: number) => {
     // If you had a toast here...
   };
 
@@ -101,6 +101,7 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({ translation, bookId, c
           <button 
             onClick={togglePlay}
             disabled={isLoading}
+            aria-label={isPlaying ? 'Mettre en pause la lecture audio' : 'Lancer la lecture audio'}
             className={`w-10 h-10 rounded-full flex items-center justify-center transition-colors shadow-sm
               ${isLoading ? 'bg-bg-secondary text-text-muted cursor-not-allowed' : 'bg-accent-gold text-white hover:bg-accent-brown'}`}
           >
@@ -113,12 +114,13 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({ translation, bookId, c
           <button 
             onClick={cycleSpeed}
             title="S'applique au prochain chapitre"
-            className="text-xs font-mono font-medium text-text-secondary hover:text-text-primary w-10 text-right"
+            aria-label={`Vitesse de lecture ${speed.toFixed(1)}x. Appuyer pour changer la vitesse`}
+            className="text-sm font-mono font-medium text-text-secondary hover:text-text-primary w-11 h-11 rounded-md hover:bg-bg-secondary text-right"
           >
             {speed.toFixed(1)}x
           </button>
           <div className="w-px h-6 bg-border mx-1"></div>
-          <button onClick={onClose} className="text-text-muted hover:text-text-primary p-1">
+          <button onClick={onClose} aria-label="Fermer le lecteur audio" className="text-text-muted hover:text-text-primary p-2 rounded-md hover:bg-bg-secondary">
             <X size={20} />
           </button>
         </div>

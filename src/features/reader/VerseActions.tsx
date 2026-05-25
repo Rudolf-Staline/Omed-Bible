@@ -185,36 +185,37 @@ export const VerseActions: React.FC<VerseActionsProps> = ({ verse, verseId, tran
   ];
 
   return (
-    <div className="bg-bg-card shadow-lg border border-border rounded-xl px-2 py-1.5 flex items-center gap-1">
+    <div className="bg-bg-card shadow-lg border border-border rounded-xl px-2 py-1.5 flex items-center gap-1 max-w-[calc(100vw-2rem)] overflow-x-auto">
       {showColors ? (
         <div className="flex items-center gap-2 px-2">
           {colors.map((c) => (
             <button
               key={c.id}
               onClick={(e) => handleHighlight(c.id, e)}
-              className="w-6 h-6 rounded-full border border-border shadow-sm flex items-center justify-center transition-transform hover:scale-110"
+              aria-label={`Appliquer le surlignage ${c.id}`}
+              className="w-8 h-8 rounded-full border border-border shadow-sm flex items-center justify-center transition-transform hover:scale-110"
               style={{ backgroundColor: c.hex }}
             >
               {currentHighlight?.color === c.id && <Check size={12} className="text-black/50" />}
             </button>
           ))}
-          <button onClick={(e) => { e.stopPropagation(); setShowColors(false); }} className="p-1 hover:bg-bg-secondary rounded ml-2">
+          <button onClick={(e) => { e.stopPropagation(); setShowColors(false); }} aria-label="Fermer la palette de couleurs" className="w-10 h-10 flex items-center justify-center hover:bg-bg-secondary rounded ml-2">
             <X size={16} className="text-text-muted" />
           </button>
         </div>
       ) : (
         <>
-          <button onClick={handleFavorite} className="p-2 hover:bg-bg-secondary rounded-lg text-text-secondary transition-colors group" title="Favori">
+          <button onClick={handleFavorite} aria-label={isFavorite ? 'Retirer des favoris' : 'Ajouter aux favoris'} className="w-11 h-11 flex items-center justify-center hover:bg-bg-secondary rounded-lg text-text-secondary transition-colors group" title="Favori">
              <Heart size={18} className={isFavorite ? 'fill-accent-gold text-accent-gold' : 'group-hover:text-accent-gold'} />
           </button>
-          <button onClick={handleNote} className="p-2 hover:bg-bg-secondary rounded-lg text-text-secondary transition-colors hover:text-accent-gold" title="Noter">
+          <button onClick={handleNote} aria-label="Ajouter une note" className="w-11 h-11 flex items-center justify-center hover:bg-bg-secondary rounded-lg text-text-secondary transition-colors hover:text-accent-gold" title="Noter">
              <Edit3 size={18} />
           </button>
-          <button onClick={(e) => { e.stopPropagation(); setShowColors(true); }} className="p-2 hover:bg-bg-secondary rounded-lg text-text-secondary transition-colors hover:text-accent-gold" title="Surligner">
+          <button onClick={(e) => { e.stopPropagation(); setShowColors(true); }} aria-label="Surligner le verset" className="w-11 h-11 flex items-center justify-center hover:bg-bg-secondary rounded-lg text-text-secondary transition-colors hover:text-accent-gold" title="Surligner">
              <Type size={18} />
           </button>
           <div className="relative">
-            <button onClick={(e) => { e.stopPropagation(); setShowShareOptions(!showShareOptions); }} className="p-2 hover:bg-bg-secondary rounded-lg text-text-secondary transition-colors hover:text-accent-gold" title="Partager">
+            <button onClick={(e) => { e.stopPropagation(); setShowShareOptions(!showShareOptions); }} aria-label="Partager le verset" className="w-11 h-11 flex items-center justify-center hover:bg-bg-secondary rounded-lg text-text-secondary transition-colors hover:text-accent-gold" title="Partager">
                <Share2 size={18} />
             </button>
             {showShareOptions && (
@@ -227,7 +228,7 @@ export const VerseActions: React.FC<VerseActionsProps> = ({ verse, verseId, tran
             )}
           </div>
           <div className="w-px h-6 bg-border mx-1"></div>
-          <button onClick={(e) => { e.stopPropagation(); onClose(); }} className="p-2 hover:bg-bg-secondary rounded-lg text-text-muted transition-colors">
+          <button onClick={(e) => { e.stopPropagation(); onClose(); }} aria-label="Fermer les actions du verset" className="w-11 h-11 flex items-center justify-center hover:bg-bg-secondary rounded-lg text-text-muted transition-colors">
             <X size={18} />
           </button>
         </>

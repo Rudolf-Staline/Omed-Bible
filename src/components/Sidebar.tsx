@@ -19,7 +19,8 @@ export const Sidebar: React.FC = () => {
   ];
 
   return (
-    <div className="w-64 h-screen bg-bg-secondary flex flex-col border-r border-border sticky top-0">
+    <>
+    <div className="hidden md:flex w-64 h-screen bg-bg-secondary flex-col border-r border-border sticky top-0">
       <div className="p-6">
         <h1 className="font-display text-2xl font-semibold text-text-primary flex items-center gap-2 cursor-pointer" onClick={() => navigate('/')}>
           <BookOpen className="text-accent-gold" />
@@ -97,5 +98,32 @@ export const Sidebar: React.FC = () => {
         </div>
       </div>
     </div>
+
+    <nav
+      aria-label="Navigation mobile"
+      className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-bg-card border-t border-border px-2 py-2"
+    >
+      <div className="grid grid-cols-5 gap-1">
+        {navItems.map((item) => (
+          <NavLink
+            key={item.to}
+            to={item.to}
+            aria-label={item.label}
+            className={({ isActive }) =>
+              clsx(
+                'flex flex-col items-center justify-center gap-1 rounded-lg min-h-11 px-1 py-1 text-[11px] font-medium transition-colors',
+                isActive
+                  ? 'bg-bg-primary text-text-primary border border-border'
+                  : 'text-text-secondary hover:bg-bg-primary/50 hover:text-text-primary'
+              )
+            }
+          >
+            <item.icon size={16} aria-hidden="true" />
+            <span className="leading-none">{item.label}</span>
+          </NavLink>
+        ))}
+      </div>
+    </nav>
+    </>
   );
 };

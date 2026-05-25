@@ -46,7 +46,7 @@ export const SearchPage: React.FC = () => {
 
   return (
     <div className="max-w-3xl mx-auto py-8">
-      <h1 className="font-display text-3xl font-bold mb-8 text-text-primary">Rechercher</h1>
+      <h1 className="font-display text-2xl sm:text-3xl font-bold mb-8 text-text-primary">Rechercher</h1>
 
       <form onSubmit={handleSearch} className="relative mb-12">
         <input
@@ -54,13 +54,15 @@ export const SearchPage: React.FC = () => {
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder="Rechercher un mot, une phrase, un passage..."
-          className="w-full bg-bg-card border border-border rounded-xl py-4 pl-12 pr-4 text-lg text-text-primary focus:outline-none focus:ring-2 focus:ring-accent-gold/50 shadow-sm transition-shadow"
+          aria-label="Recherche biblique"
+          className="w-full bg-bg-card border border-border rounded-xl py-3 sm:py-4 pl-11 sm:pl-12 pr-4 sm:pr-36 text-base sm:text-lg text-text-primary focus:outline-none focus:ring-2 focus:ring-accent-gold/50 shadow-sm transition-shadow"
         />
         <SearchIcon className="absolute left-4 top-1/2 -translate-y-1/2 text-text-muted" size={24} />
         <button
           type="submit"
           disabled={loading || !query.trim()}
-          className="absolute right-2 top-1/2 -translate-y-1/2 bg-accent-gold text-white px-4 py-2 rounded-lg font-medium hover:bg-accent-brown transition-colors disabled:opacity-50"
+          aria-label="Lancer la recherche"
+          className="mt-3 sm:mt-0 sm:absolute sm:right-2 sm:top-1/2 sm:-translate-y-1/2 w-full sm:w-auto bg-accent-gold text-white px-4 py-2.5 rounded-lg font-medium hover:bg-accent-brown transition-colors disabled:opacity-50"
         >
           {loading ? 'Recherche...' : 'Chercher'}
         </button>

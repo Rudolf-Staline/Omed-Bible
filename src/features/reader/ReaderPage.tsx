@@ -64,11 +64,12 @@ export const ReaderPage: React.FC = () => {
   return (
     <div className="flex flex-col h-full">
       {/* Header du lecteur */}
-      <header className="flex flex-wrap items-center gap-4 mb-8 sticky top-0 bg-bg-primary/90 backdrop-blur-sm z-10 py-4 border-b border-border">
+      <header className="flex flex-wrap items-center gap-2 sm:gap-4 mb-6 sm:mb-8 sticky top-0 bg-bg-primary/90 backdrop-blur-sm z-10 py-3 sm:py-4 border-b border-border">
         <select
           value={translation}
           onChange={handleTranslationChange}
-          className="bg-transparent border border-border rounded px-3 py-1.5 text-sm font-medium focus:outline-none focus:ring-1 focus:ring-accent-gold"
+          aria-label="Choisir la traduction"
+          className="bg-transparent border border-border rounded px-3 py-2 text-sm font-medium min-h-11 focus:outline-none focus:ring-1 focus:ring-accent-gold"
         >
           {FEATURED_TRANSLATIONS.map((t) => (
             <option key={t.id} value={t.id}>{t.short} - {t.name}</option>
@@ -78,7 +79,8 @@ export const ReaderPage: React.FC = () => {
         <select
           value={bookId}
           onChange={handleBookChange}
-          className="bg-transparent border border-border rounded px-3 py-1.5 text-sm font-medium focus:outline-none focus:ring-1 focus:ring-accent-gold"
+          aria-label="Choisir le livre"
+          className="bg-transparent border border-border rounded px-3 py-2 text-sm font-medium min-h-11 focus:outline-none focus:ring-1 focus:ring-accent-gold"
         >
           {BIBLE_BOOKS.map((b) => (
             <option key={b.id} value={b.id}>{b.name}</option>
@@ -88,7 +90,8 @@ export const ReaderPage: React.FC = () => {
         <select
           value={chapterNum}
           onChange={handleChapterChange}
-          className="bg-transparent border border-border rounded px-3 py-1.5 text-sm font-medium focus:outline-none focus:ring-1 focus:ring-accent-gold"
+          aria-label="Choisir le chapitre"
+          className="bg-transparent border border-border rounded px-3 py-2 text-sm font-medium min-h-11 focus:outline-none focus:ring-1 focus:ring-accent-gold"
         >
           {Array.from({ length: currentBook.chapters }, (_, i) => i + 1).map((c) => (
             <option key={c} value={c}>Chapitre {c}</option>
@@ -99,7 +102,8 @@ export const ReaderPage: React.FC = () => {
 
         <button 
           onClick={() => setShowAudio(true)}
-          className="flex items-center gap-2 text-sm text-text-secondary hover:text-text-primary transition-colors"
+          aria-label="Ouvrir le lecteur audio"
+          className="flex items-center gap-2 text-sm text-text-secondary hover:text-text-primary transition-colors min-h-11 px-2"
         >
           <Headphones size={18} />
           <span className="hidden sm:inline">Audio</span>
@@ -107,7 +111,8 @@ export const ReaderPage: React.FC = () => {
 
         <button 
           onClick={() => setCompareTranslation(compareTranslation ? null : 'kjv')}
-          className={`flex items-center gap-2 text-sm transition-colors ${compareTranslation ? 'text-accent-gold' : 'text-text-secondary hover:text-text-primary'}`}
+          aria-label="Activer ou désactiver la comparaison de traductions"
+          className={`flex items-center gap-2 text-sm transition-colors min-h-11 px-2 ${compareTranslation ? 'text-accent-gold' : 'text-text-secondary hover:text-text-primary'}`}
         >
           <GitCompare size={18} />
           <span className="hidden sm:inline">Comparer</span>
@@ -115,13 +120,13 @@ export const ReaderPage: React.FC = () => {
       </header>
 
       {/* Zone de lecture */}
-      <div className="flex-1 flex">
+      <div className="flex-1 flex flex-col lg:flex-row gap-4 lg:gap-0 overflow-x-hidden">
         <div className={`flex-1 transition-all ${compareTranslation ? 'pr-4 border-r border-border' : ''}`}>
            <ChapterView translation={translation || 'lsg'} bookId={bookId || 'jean'} chapter={chapterNum} />
         </div>
         
         {compareTranslation && (
-          <div className="flex-1 pl-4">
+          <div className="flex-1 lg:pl-4">
              <div className="mb-4">
                 <select
                   value={compareTranslation}
