@@ -6,6 +6,10 @@ import { useHighlightsStore } from '../../store/useHighlightsStore';
 import type { HighlightColor } from '../../store/useHighlightsStore';
 import { VerseActions } from './VerseActions';
 import clsx from 'clsx';
+import { LoadingState } from '../../components/LoadingState';
+import { ErrorState } from '../../components/ErrorState';
+import { EmptyState } from '../../components/EmptyState';
+import { BookOpen } from 'lucide-react';
 
 interface ChapterViewProps {
   translation: string;
@@ -31,7 +35,8 @@ export const ChapterView: React.FC<ChapterViewProps> = ({ translation, bookId, c
         const data = await getChapter(translation, bookId, chapter);
         if (mounted) setVerses(data);
       } catch (err: any) {
-        if (mounted) setError(err.message || 'Erreur lors du chargement du chapitre');
+        console.error(err);
+        if (mounted) setError('Impossible de charger ce chapitre pour le moment.');
       } finally {
         if (mounted) setLoading(false);
       }
@@ -40,8 +45,8 @@ export const ChapterView: React.FC<ChapterViewProps> = ({ translation, bookId, c
     return () => { mounted = false; };
   }, [translation, bookId, chapter]);
 
-  if (loading) return <div className="py-20 text-center text-text-muted animate-pulse">Chargement en cours...</div>;
-  if (error) return <div className="py-20 text-center text-red-500">{error}</div>;
+  if (loading) return <LoadingState title="Chargement du chapitre" description="Le texte biblique est en cours de récupération." />;
+  if (error) return <ErrorState title="Chapitre indisponible" description={error} />;
 
   const fontClass = settings.fontFamily === 'Lora' ? 'font-body' : 'font-sans';
   
@@ -76,6 +81,14 @@ export const ChapterView: React.FC<ChapterViewProps> = ({ translation, bookId, c
       </h2>
 
       <div className="space-y-4">
+        {verses.length === 0 && (
+          <EmptyState
+            icon={BookOpen}
+            title="Aucun verset disponible"
+            description="Ce chapitre ne contient pas de texte affichable pour cette version."
+          />
+        )}
+
         {verses.map((verse) => {
           const verseId = `${translation}-${bookId}-${chapter}-${verse.verse}`;
           const isSelected = selectedVerseId === verseId;

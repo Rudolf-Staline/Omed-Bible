@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNotesStore } from '../../store/useNotesStore';
 import { useNavigate } from 'react-router-dom';
 import { Edit3, Trash2, Check, X } from 'lucide-react';
+import { EmptyState } from '../../components/EmptyState';
 import toast from 'react-hot-toast';
 
 export const NotesPage: React.FC = () => {
@@ -27,17 +28,13 @@ export const NotesPage: React.FC = () => {
 
   if (notes.length === 0) {
     return (
-      <div className="max-w-3xl mx-auto py-20 text-center">
-        <Edit3 size={48} className="mx-auto text-text-muted mb-4 opacity-50" />
-        <h2 className="font-display text-2xl font-semibold text-text-primary mb-2">Aucune note</h2>
-        <p className="text-text-secondary">Prenez des notes pendant votre lecture.</p>
-        <button
-          onClick={() => navigate('/')}
-          className="mt-6 px-6 py-2 bg-bg-secondary text-text-primary rounded-lg font-medium hover:bg-border transition-colors"
-        >
-          Commencer à lire
-        </button>
-      </div>
+      <EmptyState
+        icon={Edit3}
+        title="Aucune note pour le moment"
+        description="Vos notes de lecture apparaîtront ici après votre prochaine annotation."
+        actionLabel="Commencer à lire"
+        onAction={() => navigate('/')}
+      />
     );
   }
 

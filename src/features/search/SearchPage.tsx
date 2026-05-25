@@ -4,6 +4,9 @@ import { Search as SearchIcon, ChevronRight } from 'lucide-react';
 import { searchVerses, FEATURED_TRANSLATIONS, BIBLE_BOOKS } from '../../utils/bibleApi';
 import type { SearchResult } from '../../utils/bibleApi';
 import { useSettingsStore } from '../../store/useSettingsStore';
+import { ErrorState } from '../../components/ErrorState';
+import { EmptyState } from '../../components/EmptyState';
+import { LoadingState } from '../../components/LoadingState';
 
 export const SearchPage: React.FC = () => {
   const [query, setQuery] = useState('');
@@ -24,7 +27,8 @@ export const SearchPage: React.FC = () => {
       const data = await searchVerses(translation, query);
       setResults(data);
     } catch (err: any) {
-      setError(err.message || 'Erreur lors de la recherche');
+      console.error(err);
+      setError("Impossible d'effectuer la recherche pour le moment.");
     } finally {
       setLoading(false);
     }
@@ -66,7 +70,14 @@ export const SearchPage: React.FC = () => {
         </button>
       </form>
 
-      {error && <div className="text-red-500 mb-8 p-4 bg-red-50 rounded-lg">{error}</div>}
+      {error && (
+        <ErrorState
+          title="Recherche indisponible"
+          description={error}
+          actionLabel="Réessayer"
+          onAction={() => setError(null)}
+        />
+      )}
 
       <div className="space-y-6">
         {results.length > 0 && <h2 className="text-sm font-semibold text-text-muted uppercase tracking-wider mb-4">{results.length} résultats trouvés</h2>}
@@ -91,11 +102,14 @@ export const SearchPage: React.FC = () => {
           </div>
         ))}
 
+        {loading && <LoadingState compact title="Recherche en cours" description="Nous analysons votre requête." />}
+
         {!loading && !error && query && results.length === 0 && (
-          <div className="text-center py-12 text-text-muted">
-            <p className="text-lg">Aucun résultat trouvé pour "{query}".</p>
-            <p className="text-sm mt-2">Essayez d'utiliser d'autres mots-clés ou de changer de version.</p>
-          </div>
+          <EmptyState
+            icon={SearchIcon}
+            title="Aucun résultat trouvé"
+            description={`Aucun résultat trouvé pour « ${query} ». Essayez d'autres mots-clés ou une autre version.`}
+          />
         )}
       </div>
     </div>
