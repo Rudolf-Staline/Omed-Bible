@@ -1,14 +1,9 @@
-import { useEffect } from 'react';
+import { Suspense, lazy, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { useAuthStore } from './store/useAuthStore';
 import { LoginPage } from './features/auth/LoginPage';
 import { Layout } from './components/Layout';
 import { ReaderPage } from './features/reader/ReaderPage';
-import { SearchPage } from './features/search/SearchPage';
-import { FavoritesPage } from './features/favorites/FavoritesPage';
-import { NotesPage } from './features/notes/NotesPage';
-import { PlansPage } from './features/plans/PlansPage';
-import { SettingsPage } from './features/settings/SettingsPage';
 import { PlanDetail } from './features/plans/PlanDetail';
 import { useBibleStore } from './store/useBibleStore';
 import { useSettingsStore } from './store/useSettingsStore';
@@ -17,6 +12,16 @@ import { useHighlightsStore } from './store/useHighlightsStore';
 import { useNotesStore } from './store/useNotesStore';
 import { usePlansStore } from './store/usePlansStore';
 import { syncFileFromDrive, DRIVE_FILES } from './utils/driveSync';
+
+const SearchPage = lazy(() => import('./features/search/SearchPage').then((module) => ({ default: module.SearchPage })));
+const FavoritesPage = lazy(() => import('./features/favorites/FavoritesPage').then((module) => ({ default: module.FavoritesPage })));
+const NotesPage = lazy(() => import('./features/notes/NotesPage').then((module) => ({ default: module.NotesPage })));
+const PlansPage = lazy(() => import('./features/plans/PlansPage').then((module) => ({ default: module.PlansPage })));
+const SettingsPage = lazy(() => import('./features/settings/SettingsPage').then((module) => ({ default: module.SettingsPage })));
+
+function RouteFallback() {
+  return <div className="p-4 text-sm text-text-muted">Chargement…</div>;
+}
 
 function RootRedirect() {
   const { translation, bookId, chapter } = useBibleStore();
@@ -74,7 +79,7 @@ function App() {
           if (remotePlans) loadPlans(remotePlans);
           if (remotePosition) setPosition(remotePosition.translation, remotePosition.bookId, remotePosition.chapter);
         } catch (err) {
-          console.error("Erreur de synchronisation automatique en arrière-plan", err);
+          console.error('Erreur de synchronisation automatique en arrière-plan', err);
         }
       };
       syncDown();
@@ -85,16 +90,16 @@ function App() {
     <Router>
       <Routes>
         <Route path="/login" element={<LoginPage />} />
-        
+
         <Route element={<Layout />}>
           <Route path="/" element={<RootRedirect />} />
           <Route path="/read/:translation/:bookId/:chapter" element={<ReaderPage />} />
-          <Route path="/search" element={<SearchPage />} />
-          <Route path="/favorites" element={<FavoritesPage />} />
-          <Route path="/notes" element={<NotesPage />} />
-          <Route path="/plans" element={<PlansPage />} />
+          <Route path="/search" element={<Suspense fallback={<RouteFallback />}><SearchPage /></Suspense>} />
+          <Route path="/favorites" element={<Suspense fallback={<RouteFallback />}><FavoritesPage /></Suspense>} />
+          <Route path="/notes" element={<Suspense fallback={<RouteFallback />}><NotesPage /></Suspense>} />
+          <Route path="/plans" element={<Suspense fallback={<RouteFallback />}><PlansPage /></Suspense>} />
           <Route path="/plans/:planId" element={<PlanDetail />} />
-          <Route path="/settings" element={<SettingsPage />} />
+          <Route path="/settings" element={<Suspense fallback={<RouteFallback />}><SettingsPage /></Suspense>} />
         </Route>
       </Routes>
     </Router>

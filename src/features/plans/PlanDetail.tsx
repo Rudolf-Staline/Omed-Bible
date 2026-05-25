@@ -2,7 +2,7 @@ import React from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
 import { usePlansStore } from '../../store/usePlansStore';
-import { READING_PLANS } from './PlansPage';
+import { READING_PLANS } from './plansData';
 
 export const PlanDetail: React.FC = () => {
   const { planId } = useParams<{ planId: string }>();
