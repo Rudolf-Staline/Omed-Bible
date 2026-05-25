@@ -45,24 +45,26 @@ export const SearchPage: React.FC = () => {
   };
 
   return (
-    <div className="max-w-3xl mx-auto py-8">
-      <h1 className="font-display text-3xl font-bold mb-8 text-text-primary">Rechercher</h1>
+    <div className="max-w-3xl mx-auto py-6 sm:py-8">
+      <h1 className="font-display text-2xl sm:text-3xl font-bold mb-8 text-text-primary">Recherche</h1>
 
       <form onSubmit={handleSearch} className="relative mb-12">
         <input
           type="text"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          placeholder="Rechercher un mot, une phrase, un passage..."
-          className="w-full bg-bg-card border border-border rounded-xl py-4 pl-12 pr-4 text-lg text-text-primary focus:outline-none focus:ring-2 focus:ring-accent-gold/50 shadow-sm transition-shadow"
+          placeholder="Mot-clé, expression ou référence biblique"
+          aria-label="Recherche biblique"
+          className="w-full bg-bg-card border border-border rounded-xl py-3 sm:py-4 pl-11 sm:pl-12 pr-4 sm:pr-32 text-base text-text-primary focus:outline-none focus:ring-1 focus:ring-accent-gold/40 transition-colors"
         />
-        <SearchIcon className="absolute left-4 top-1/2 -translate-y-1/2 text-text-muted" size={24} />
+        <SearchIcon className="absolute left-4 top-5 sm:top-1/2 sm:-translate-y-1/2 text-text-muted" size={22} aria-hidden="true" />
         <button
           type="submit"
           disabled={loading || !query.trim()}
-          className="absolute right-2 top-1/2 -translate-y-1/2 bg-accent-gold text-white px-4 py-2 rounded-lg font-medium hover:bg-accent-brown transition-colors disabled:opacity-50"
+          aria-label="Lancer la recherche"
+          className="mt-3 sm:mt-0 sm:absolute sm:right-2 sm:top-1/2 sm:-translate-y-1/2 w-full sm:w-auto bg-accent-gold text-white px-4 py-2.5 rounded-lg font-medium hover:bg-accent-brown transition-colors disabled:opacity-50"
         >
-          {loading ? 'Recherche...' : 'Chercher'}
+          {loading ? 'Recherche...' : 'Lancer'}
         </button>
       </form>
 
@@ -72,7 +74,7 @@ export const SearchPage: React.FC = () => {
         {results.length > 0 && <h2 className="text-sm font-semibold text-text-muted uppercase tracking-wider mb-4">{results.length} résultats trouvés</h2>}
         
         {results.map((result, idx) => (
-          <div key={idx} className="bg-bg-card border border-border rounded-xl p-6 hover:shadow-md transition-shadow">
+          <div key={idx} className="bg-bg-card border border-border rounded-xl p-6 transition-colors hover:bg-bg-primary/40">
             <div className="flex justify-between items-start mb-3">
               <h3 className="font-display font-semibold text-lg text-text-primary">
                 {result.reference}
@@ -93,8 +95,8 @@ export const SearchPage: React.FC = () => {
 
         {!loading && !error && query && results.length === 0 && (
           <div className="text-center py-12 text-text-muted">
-            <p className="text-lg">Aucun résultat trouvé pour "{query}".</p>
-            <p className="text-sm mt-2">Essayez d'utiliser d'autres mots-clés ou de changer de version.</p>
+            <p className="text-lg">Aucun résultat pour « {query} ».</p>
+            <p className="text-sm mt-2">Affinez votre requête ou essayez une autre traduction.</p>
           </div>
         )}
       </div>

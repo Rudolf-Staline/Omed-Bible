@@ -27,7 +27,7 @@ export const PlansPage: React.FC = () => {
     <div className="max-w-3xl mx-auto py-8">
       <h1 className="font-display text-3xl font-bold mb-8 text-text-primary flex items-center gap-3">
         <Calendar className="text-accent-gold" />
-        Plans de lecture
+        Parcours
       </h1>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -42,7 +42,7 @@ export const PlansPage: React.FC = () => {
             <div 
               key={plan.id}
               onClick={() => handlePlanClick(plan.id)}
-              className="bg-bg-card border border-border rounded-xl p-6 hover:shadow-md transition-shadow cursor-pointer flex flex-col h-full"
+            className="bg-bg-card border border-border rounded-xl p-6 transition-colors cursor-pointer flex flex-col h-full hover:bg-bg-primary/40"
             >
               <div className="flex justify-between items-start mb-2">
                 <h3 className="font-display font-semibold text-lg text-text-primary">{plan.name}</h3>
@@ -74,7 +74,7 @@ export const PlansPage: React.FC = () => {
                   <div className="flex items-center justify-between">
                     <span className="text-sm font-medium text-text-muted">{plan.days} jours</span>
                     <span className="flex items-center gap-1 text-sm font-medium text-accent-brown">
-                      Commencer <ChevronRight size={16} />
+                      Ouvrir <ChevronRight size={16} />
                     </span>
                   </div>
                 )}

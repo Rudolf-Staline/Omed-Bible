@@ -29,13 +29,13 @@ export const NotesPage: React.FC = () => {
     return (
       <div className="max-w-3xl mx-auto py-20 text-center">
         <Edit3 size={48} className="mx-auto text-text-muted mb-4 opacity-50" />
-        <h2 className="font-display text-2xl font-semibold text-text-primary mb-2">Aucune note</h2>
-        <p className="text-text-secondary">Prenez des notes pendant votre lecture.</p>
+        <h2 className="font-display text-2xl font-semibold text-text-primary mb-2">Aucune note pour le moment</h2>
+        <p className="text-text-secondary">Vos notes apparaîtront ici lorsque vous annoterez un verset.</p>
         <button
           onClick={() => navigate('/')}
           className="mt-6 px-6 py-2 bg-bg-secondary text-text-primary rounded-lg font-medium hover:bg-border transition-colors"
         >
-          Commencer à lire
+          Ouvrir la lecture
         </button>
       </div>
     );
@@ -57,7 +57,7 @@ export const NotesPage: React.FC = () => {
           const reference = `${bookId.charAt(0).toUpperCase() + bookId.slice(1)} ${chapter}:${verse}`;
 
           return (
-            <div key={note.id} className="bg-bg-card border border-border rounded-xl p-6 group hover:shadow-sm transition-all">
+            <div key={note.id} className="bg-bg-card border border-border rounded-xl p-6 group transition-colors hover:bg-bg-primary/40">
               <div className="flex justify-between items-start mb-4">
                 <div className="flex items-center gap-2">
                   <h3 className="font-display font-semibold text-lg text-text-primary">{reference}</h3>
@@ -93,7 +93,7 @@ export const NotesPage: React.FC = () => {
                   <textarea
                     value={editText}
                     onChange={(e) => setEditText(e.target.value)}
-                    className="w-full bg-bg-primary border border-border rounded-lg p-3 text-text-primary focus:outline-none focus:ring-1 focus:ring-accent-gold font-body mb-3 min-h-[100px]"
+                    className="w-full bg-bg-primary border border-border rounded-lg p-3 text-text-primary focus:outline-none focus:ring-1 focus:ring-accent-gold/50 font-body mb-3 min-h-[100px]"
                   />
                   <div className="flex justify-end gap-2">
                     <button

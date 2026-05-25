@@ -18,9 +18,9 @@ export const PlanDetail: React.FC = () => {
   if (!plan || !planProgress) {
     return (
       <div className="py-20 text-center text-text-muted">
-        Plan introuvable ou non commencé.
+        Parcours introuvable ou non démarré.
         <br />
-        <button onClick={() => navigate('/plans')} className="text-accent-brown underline mt-4">Retour aux plans</button>
+        <button onClick={() => navigate('/plans')} className="text-accent-brown underline mt-4">Retour aux parcours</button>
       </div>
     );
   }
@@ -38,7 +38,7 @@ export const PlanDetail: React.FC = () => {
         className="flex items-center gap-2 text-text-secondary hover:text-text-primary transition-colors mb-6 text-sm font-medium"
       >
         <ArrowLeft size={16} />
-        Retour aux plans
+        Retour aux parcours
       </button>
 
       <div className="bg-bg-card border border-border rounded-2xl p-8 mb-8">
@@ -65,7 +65,7 @@ export const PlanDetail: React.FC = () => {
       </div>
 
       <div className="space-y-4">
-        <h2 className="font-display text-xl font-bold text-text-primary mb-4">Progression quotidienne</h2>
+        <h2 className="font-display text-xl font-bold text-text-primary mb-4">Suivi quotidien</h2>
         <div className="grid grid-cols-5 sm:grid-cols-7 md:grid-cols-10 gap-3">
           {days.map((day) => {
             const isCompleted = planProgress.completedDays.includes(day);

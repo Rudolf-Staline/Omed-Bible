@@ -121,13 +121,13 @@ export const SettingsPage: React.FC = () => {
     <div className="max-w-3xl mx-auto py-8">
       <h1 className="font-display text-3xl font-bold mb-8 text-text-primary flex items-center gap-3">
         <Settings className="text-accent-gold" />
-        Paramètres
+        Préférences
       </h1>
 
       <div className="space-y-8">
         {/* Section: Apparence */}
         <section className="bg-bg-card border border-border rounded-xl p-6">
-          <h2 className="font-display font-semibold text-xl text-text-primary mb-6">Apparence & Lecture</h2>
+          <h2 className="font-display font-semibold text-xl text-text-primary mb-6">Lecture et apparence</h2>
           
           <div className="space-y-6">
             <div>
@@ -245,7 +245,7 @@ export const SettingsPage: React.FC = () => {
 
         {/* Section: Compte & Synchro */}
         <section className="bg-bg-card border border-border rounded-xl p-6">
-          <h2 className="font-display font-semibold text-xl text-text-primary mb-6">Compte Google & Synchronisation</h2>
+          <h2 className="font-display font-semibold text-xl text-text-primary mb-6">Compte Google et synchronisation</h2>
           
           {user ? (
             <div className="space-y-6">
@@ -284,7 +284,7 @@ export const SettingsPage: React.FC = () => {
 
                 <div className="flex items-center justify-center gap-2 text-sm text-text-muted mt-2">
                   <span className={`w-2.5 h-2.5 rounded-full ${synced ? 'bg-green-500' : 'bg-gray-400'}`}></span>
-                  État : {synced ? 'Synchronisation automatique activée' : 'Non synchronisé'}
+                  État : {synced ? 'Synchronisation active' : 'Synchronisation inactive'}
                 </div>
               </div>
 
@@ -328,7 +328,7 @@ export const SettingsPage: React.FC = () => {
               </div>
               <div>
                 <h4 className="font-medium text-text-primary">Exporter les données</h4>
-                <p className="text-sm text-text-muted">Télécharger une sauvegarde JSON de vos favoris, notes et paramètres.</p>
+                <p className="text-sm text-text-muted">Télécharger une sauvegarde JSON de vos marque-pages, notes et préférences.</p>
               </div>
             </button>
 
