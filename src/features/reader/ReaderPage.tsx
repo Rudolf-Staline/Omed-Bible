@@ -4,7 +4,8 @@ import { useBibleStore } from '../../store/useBibleStore';
 import { BIBLE_BOOKS, FEATURED_TRANSLATIONS } from '../../utils/bibleApi';
 import { ChapterView } from './ChapterView';
 import { AudioPlayer } from '../../components/AudioPlayer';
-import { ChevronLeft, ChevronRight, Headphones, GitCompare } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Headphones, GitCompare, WifiOff } from 'lucide-react';
+import { useOnlineStatus } from '../../utils/useOnlineStatus';
 
 export const ReaderPage: React.FC = () => {
   const { translation, bookId, chapter } = useParams<{ translation: string; bookId: string; chapter: string }>();
@@ -16,6 +17,7 @@ export const ReaderPage: React.FC = () => {
   const setCompareTranslation = useBibleStore((state) => state.setCompareTranslation);
   
   const chapterNum = parseInt(chapter || '1', 10);
+  const isOnline = useOnlineStatus();
   
   useEffect(() => {
     if (translation && bookId && chapter) {
@@ -96,6 +98,13 @@ export const ReaderPage: React.FC = () => {
         </select>
 
         <div className="flex-1" />
+
+        {!isOnline && (
+          <div className="flex items-center gap-2 rounded-full border border-amber-500/40 bg-amber-500/10 px-3 py-1 text-xs font-medium text-amber-300" title="Vous êtes hors ligne">
+            <WifiOff size={14} />
+            Hors ligne
+          </div>
+        )}
 
         <button 
           onClick={() => setShowAudio(true)}
