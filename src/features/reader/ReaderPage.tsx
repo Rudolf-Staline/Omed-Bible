@@ -4,12 +4,14 @@ import { useBibleStore } from '../../store/useBibleStore';
 import { BIBLE_BOOKS, FEATURED_TRANSLATIONS } from '../../utils/bibleApi';
 import { ChapterView } from './ChapterView';
 import { AudioPlayer } from '../../components/AudioPlayer';
-import { ChevronDown, ChevronLeft, ChevronRight, Headphones, GitCompare } from 'lucide-react';
+import { useOnlineStatus } from '../../utils/useOnlineStatus';
+import { ChevronDown, ChevronLeft, ChevronRight, Headphones, GitCompare, WifiOff } from 'lucide-react';
 
 export const ReaderPage: React.FC = () => {
   const { translation, bookId, chapter } = useParams<{ translation: string; bookId: string; chapter: string }>();
   const navigate = useNavigate();
   const [showAudio, setShowAudio] = React.useState(false);
+  const isOnline = useOnlineStatus();
 
   const setPosition = useBibleStore((state) => state.setPosition);
   const compareTranslation = useBibleStore((state) => state.compareTranslation);
@@ -55,6 +57,13 @@ export const ReaderPage: React.FC = () => {
             </select>
             <SelectChevron />
           </div>
+
+          {!isOnline && (
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-amber-400/30 bg-amber-500/10 px-3 py-1.5 text-xs font-medium text-amber-700">
+              <WifiOff size={14} />
+              Hors ligne
+            </span>
+          )}
 
           <div className="flex-1" />
 
