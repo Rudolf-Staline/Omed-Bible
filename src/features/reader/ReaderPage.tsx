@@ -4,7 +4,7 @@ import { useBibleStore } from '../../store/useBibleStore';
 import { BIBLE_BOOKS, FEATURED_TRANSLATIONS } from '../../utils/bibleApi';
 import { ChapterView } from './ChapterView';
 import { AudioPlayer } from '../../components/AudioPlayer';
-import { ChevronLeft, ChevronRight, Headphones, GitCompare } from 'lucide-react';
+import { ChevronDown, ChevronLeft, ChevronRight, Headphones, GitCompare } from 'lucide-react';
 
 export const ReaderPage: React.FC = () => {
   const { translation, bookId, chapter } = useParams<{ translation: string; bookId: string; chapter: string }>();
@@ -25,30 +25,45 @@ export const ReaderPage: React.FC = () => {
 
   const currentBook = BIBLE_BOOKS.find((b) => b.id === bookId) || BIBLE_BOOKS[0];
 
+  const selectClass = 'appearance-none rounded-lg border border-border/80 bg-bg-card/70 pl-3 pr-8 py-2 text-sm font-medium text-text-primary transition-colors hover:border-accent-gold/30 focus:outline-none focus:ring-1 focus:ring-accent-gold/50';
+
+  const SelectChevron = () => (
+    <ChevronDown size={15} className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 text-text-muted" />
+  );
+
   return (
     <div className="flex flex-col h-full">
-      <header className="mb-8 sticky top-0 z-10 border-b border-border/80 bg-bg-primary/95 py-3 backdrop-blur-sm">
+      <header className="mb-8 sticky top-0 z-10 border-b border-border/70 bg-bg-primary/80 py-3 backdrop-blur-md">
         <div className="flex flex-wrap items-center gap-3">
-          <select value={translation} onChange={(e) => navigate(`/read/${e.target.value}/${bookId}/${chapterNum}`)} className="rounded-md border border-border bg-bg-card/80 px-3 py-2 text-sm text-text-primary focus:outline-none focus:ring-1 focus:ring-accent-gold">
-            {FEATURED_TRANSLATIONS.map((t) => <option key={t.id} value={t.id}>{t.short} — {t.name}</option>)}
-          </select>
+          <div className="relative">
+            <select value={translation} onChange={(e) => navigate(`/read/${e.target.value}/${bookId}/${chapterNum}`)} className={selectClass}>
+              {FEATURED_TRANSLATIONS.map((t) => <option key={t.id} value={t.id}>{t.short} · {t.name}</option>)}
+            </select>
+            <SelectChevron />
+          </div>
 
-          <select value={bookId} onChange={(e) => navigate(`/read/${translation}/${e.target.value}/1`)} className="rounded-md border border-border bg-bg-card/80 px-3 py-2 text-sm text-text-primary focus:outline-none focus:ring-1 focus:ring-accent-gold">
-            {BIBLE_BOOKS.map((b) => <option key={b.id} value={b.id}>{b.name}</option>)}
-          </select>
+          <div className="relative">
+            <select value={bookId} onChange={(e) => navigate(`/read/${translation}/${e.target.value}/1`)} className={selectClass}>
+              {BIBLE_BOOKS.map((b) => <option key={b.id} value={b.id}>{b.name}</option>)}
+            </select>
+            <SelectChevron />
+          </div>
 
-          <select value={chapterNum} onChange={(e) => navigate(`/read/${translation}/${bookId}/${e.target.value}`)} className="rounded-md border border-border bg-bg-card/80 px-3 py-2 text-sm text-text-primary focus:outline-none focus:ring-1 focus:ring-accent-gold">
-            {Array.from({ length: currentBook.chapters }, (_, i) => i + 1).map((c) => <option key={c} value={c}>Chapitre {c}</option>)}
-          </select>
+          <div className="relative">
+            <select value={chapterNum} onChange={(e) => navigate(`/read/${translation}/${bookId}/${e.target.value}`)} className={selectClass}>
+              {Array.from({ length: currentBook.chapters }, (_, i) => i + 1).map((c) => <option key={c} value={c}>Chapitre {c}</option>)}
+            </select>
+            <SelectChevron />
+          </div>
 
           <div className="flex-1" />
 
-          <button onClick={() => setShowAudio(true)} className="flex items-center gap-2 rounded-md border border-border px-3 py-2 text-sm text-text-secondary transition-colors hover:text-text-primary hover:bg-bg-card/70">
+          <button onClick={() => setShowAudio(true)} className="flex items-center gap-2 rounded-lg border border-border/70 px-3 py-2 text-sm text-text-secondary transition-colors hover:text-text-primary hover:bg-bg-card/60">
             <Headphones size={17} strokeWidth={1.5} />
             <span className="hidden sm:inline">Audio</span>
           </button>
 
-          <button onClick={() => setCompareTranslation(compareTranslation ? null : 'kjv')} className={`flex items-center gap-2 rounded-md border px-3 py-2 text-sm transition-colors ${compareTranslation ? 'border-accent-gold/40 text-accent-gold bg-bg-card/70' : 'border-border text-text-secondary hover:text-text-primary hover:bg-bg-card/70'}`}>
+          <button onClick={() => setCompareTranslation(compareTranslation ? null : 'kjv')} className={`flex items-center gap-2 rounded-lg border px-3 py-2 text-sm transition-colors ${compareTranslation ? 'border-accent-gold/40 text-accent-gold bg-accent-gold/10' : 'border-border/70 text-text-secondary hover:text-text-primary hover:bg-bg-card/60'}`}>
             <GitCompare size={17} strokeWidth={1.5} />
             <span className="hidden sm:inline">Comparer</span>
           </button>
@@ -56,16 +71,19 @@ export const ReaderPage: React.FC = () => {
       </header>
 
       <div className="flex-1 flex gap-6">
-        <div className={`flex-1 transition-all ${compareTranslation ? 'pr-5 border-r border-border' : ''}`}>
+        <div className={`flex-1 transition-all ${compareTranslation ? 'pr-5 border-r border-border/70' : ''}`}>
           <ChapterView translation={translation || 'lsg'} bookId={bookId || 'jean'} chapter={chapterNum} />
         </div>
 
         {compareTranslation && (
           <div className="flex-1 pl-1">
             <div className="mb-5">
-              <select value={compareTranslation} onChange={(e) => setCompareTranslation(e.target.value)} className="rounded-md border border-border bg-bg-card/80 px-3 py-2 text-sm text-text-primary focus:outline-none focus:ring-1 focus:ring-accent-gold">
-                {FEATURED_TRANSLATIONS.map((t) => <option key={t.id} value={t.id}>{t.short} — {t.name}</option>)}
-              </select>
+              <div className="relative inline-flex">
+                <select value={compareTranslation} onChange={(e) => setCompareTranslation(e.target.value)} className={selectClass}>
+                  {FEATURED_TRANSLATIONS.map((t) => <option key={t.id} value={t.id}>{t.short} · {t.name}</option>)}
+                </select>
+                <SelectChevron />
+              </div>
             </div>
             <ChapterView translation={compareTranslation} bookId={bookId || 'jean'} chapter={chapterNum} />
           </div>
