@@ -1,14 +1,26 @@
-import React from 'react';
+import React, { useMemo, useState } from 'react';
 import { useFavoritesStore } from '../../store/useFavoritesStore';
 import { useNavigate } from 'react-router-dom';
-import { Trash2, Share2, ChevronRight, Heart } from 'lucide-react';
+import { Trash2, Share2, ChevronRight, Bookmark } from 'lucide-react';
 import { FEATURED_TRANSLATIONS } from '../../utils/bibleApi';
 import toast from 'react-hot-toast';
 
+const BIBLICAL_BOOK_ORDER = [
+  'gen','exo','lev','num','deu','jos','jdg','rut','1sa','2sa','1ki','2ki','1ch','2ch','ezr','neh','est','job','psa','pro','ecc','sng','isa','jer','lam','ezk','dan','hos','jol','amo','oba','jon','mic','nam','hab','zep','hag','zec','mal',
+  'mat','mrk','luk','jhn','act','rom','1co','2co','gal','eph','php','col','1th','2th','1ti','2ti','tit','phm','heb','jas','1pe','2pe','1jn','2jn','3jn','jud','rev'
+];
+
 export const FavoritesPage: React.FC = () => {
+  const [sortMode, setSortMode] = useState<'date' | 'biblical'>('date');
   const favorites = useFavoritesStore((state) => state.favorites);
   const removeFavorite = useFavoritesStore((state) => state.removeFavorite);
   const navigate = useNavigate();
+
+  const bookOrderMap = useMemo(() => {
+    const m = new Map<string, number>();
+    BIBLICAL_BOOK_ORDER.forEach((book, index) => m.set(book, index));
+    return m;
+  }, []);
 
   const getTranslationName = (id: string) => {
     return FEATURED_TRANSLATIONS.find((t) => t.id === id)?.short || id.toUpperCase();
@@ -18,44 +30,71 @@ export const FavoritesPage: React.FC = () => {
     e.stopPropagation();
     try {
       await navigator.clipboard.writeText(`« ${text} »\n${reference}`);
-      toast.success('Passage copié.');
+      toast.success('Texte copié !');
     } catch (err) {
       console.error('Failed to copy', err);
     }
   };
 
+  const sortedFavorites = useMemo(() => {
+    const items = [...favorites];
+
+    if (sortMode === 'date') {
+      return items.sort((a, b) => b.dateAdded - a.dateAdded);
+    }
+
+    return items.sort((a, b) => {
+      const bookA = bookOrderMap.get(a.bookId.toLowerCase()) ?? Number.MAX_SAFE_INTEGER;
+      const bookB = bookOrderMap.get(b.bookId.toLowerCase()) ?? Number.MAX_SAFE_INTEGER;
+      if (bookA !== bookB) return bookA - bookB;
+      if (a.chapter !== b.chapter) return a.chapter - b.chapter;
+      return a.verse - b.verse;
+    });
+  }, [favorites, sortMode, bookOrderMap]);
+
   if (favorites.length === 0) {
     return (
       <div className="max-w-3xl mx-auto py-20 text-center">
-        <Heart size={48} className="mx-auto text-text-muted mb-4 opacity-50" />
-        <h2 className="font-display text-2xl font-semibold text-text-primary mb-2">Aucun passage sauvegardé</h2>
-        <p className="text-text-secondary">Aucun passage sauvegardé pour le moment.</p>
+        <Bookmark size={48} className="mx-auto text-text-muted mb-4 opacity-50" />
+        <h2 className="font-display text-2xl font-semibold text-text-primary mb-2">Aucun passage sauvegardé pour le moment.</h2>
+        <p className="text-text-secondary">Vos marque-pages bibliques apparaîtront ici.</p>
         <button
           onClick={() => navigate('/')}
           className="mt-6 px-6 py-2 bg-bg-secondary text-text-primary rounded-lg font-medium hover:bg-border transition-colors"
         >
-          Ouvrir la lecture
+          Commencer à lire
         </button>
       </div>
     );
   }
 
-  // Sort by date added (newest first)
-  const sortedFavorites = [...favorites].sort((a, b) => b.dateAdded - a.dateAdded);
-
   return (
     <div className="max-w-3xl mx-auto py-8">
-      <h1 className="font-display text-3xl font-bold mb-8 text-text-primary flex items-center gap-3">
-        <Heart className="text-accent-gold" />
-        Marque-pages
-      </h1>
+      <div className="flex flex-col gap-4 mb-8 sm:flex-row sm:justify-between sm:items-center">
+        <h1 className="font-display text-3xl font-bold text-text-primary flex items-center gap-3">
+          <Bookmark className="text-accent-gold" />
+          Marque-pages
+        </h1>
+        <div className="flex items-center gap-2">
+          <label htmlFor="bookmark-sort" className="text-sm text-text-secondary">Trier</label>
+          <select
+            id="bookmark-sort"
+            value={sortMode}
+            onChange={(e) => setSortMode(e.target.value as 'date' | 'biblical')}
+            className="px-3 py-2 bg-bg-card border border-border rounded-lg text-sm text-text-primary"
+          >
+            <option value="date">Date d'ajout (récent)</option>
+            <option value="biblical">Ordre biblique</option>
+          </select>
+        </div>
+      </div>
 
       <div className="space-y-4">
         {sortedFavorites.map((verse) => {
           const reference = `${verse.bookId.charAt(0).toUpperCase() + verse.bookId.slice(1)} ${verse.chapter}:${verse.verse}`;
-          
+
           return (
-            <div key={verse.id} className="bg-bg-card border border-border rounded-xl p-6 group transition-colors hover:bg-bg-primary/40">
+            <div key={verse.id} className="bg-bg-card border border-border rounded-xl p-6 group hover:shadow-sm transition-all">
               <div className="flex justify-between items-start mb-4">
                 <div className="flex items-center gap-2">
                   <h3 className="font-display font-semibold text-lg text-text-primary">{reference}</h3>
@@ -63,20 +102,20 @@ export const FavoritesPage: React.FC = () => {
                     {getTranslationName(verse.translation)}
                   </span>
                 </div>
-                
+
                 <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                  <button 
+                  <button
                     onClick={(e) => handleShare(verse.text, reference, e)}
                     className="p-1.5 text-text-muted hover:text-accent-gold rounded transition-colors"
-                    title="Copier"
+                    title="Partager"
                   >
                     <Share2 size={16} />
                   </button>
-                  <button 
+                  <button
                     onClick={() => {
-                      if(window.confirm('Retirer ce passage sauvegardé ?')) {
+                      if (window.confirm('Retirer ce passage des marque-pages ?')) {
                         removeFavorite(verse.id);
-                        toast.success('Passage retiré des marque-pages.');
+                        toast.success('Marque-page retiré.');
                       }
                     }}
                     className="p-1.5 text-text-muted hover:text-red-500 rounded transition-colors"
@@ -87,7 +126,7 @@ export const FavoritesPage: React.FC = () => {
                 </div>
               </div>
 
-              <p className="font-body text-lg text-text-primary mb-6 leading-relaxed italic">
+              <p className="font-body text-base text-text-secondary mb-6 leading-relaxed italic">
                 « {verse.text} »
               </p>
 
