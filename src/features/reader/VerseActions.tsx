@@ -35,7 +35,7 @@ export const VerseActions: React.FC<VerseActionsProps> = ({ verse, verseId, tran
     e.stopPropagation();
     if (isFavorite) {
       removeFavorite(verseId);
-      toast('Retiré des favoris', { icon: '💔' });
+      toast.success('Marque-page retiré.');
     } else {
       addFavorite({
         id: verseId,
@@ -46,7 +46,7 @@ export const VerseActions: React.FC<VerseActionsProps> = ({ verse, verseId, tran
         text: verse.text,
         dateAdded: Date.now()
       });
-      toast.success('Ajouté aux favoris !');
+      toast.success('Passage sauvegardé.');
     }
   };
 
@@ -204,7 +204,7 @@ export const VerseActions: React.FC<VerseActionsProps> = ({ verse, verseId, tran
         </div>
       ) : (
         <>
-          <button onClick={handleFavorite} className="p-2 hover:bg-bg-secondary rounded-lg text-text-secondary transition-colors group" title="Favori">
+          <button onClick={handleFavorite} className="p-2 hover:bg-bg-secondary rounded-lg text-text-secondary transition-colors group" title="Marque-page">
              <Heart size={18} className={isFavorite ? 'fill-accent-gold text-accent-gold' : 'group-hover:text-accent-gold'} />
           </button>
           <button onClick={handleNote} className="p-2 hover:bg-bg-secondary rounded-lg text-text-secondary transition-colors hover:text-accent-gold" title="Noter">
