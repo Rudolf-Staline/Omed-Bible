@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Play, Pause, X } from 'lucide-react';
-import { fetchChapter } from '../utils/bibleApi';
-import { BIBLE_BOOKS, FEATURED_TRANSLATIONS } from '../utils/bibleApi';
+import { getChapter, type Verse, BIBLE_BOOKS, FEATURED_TRANSLATIONS } from '../utils/bibleApi';
 
 interface AudioPlayerProps {
   translation: string;
@@ -24,9 +23,9 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({ translation, bookId, c
     // Stop any ongoing speech
     window.speechSynthesis.cancel();
 
-    fetchChapter(translation, bookId, chapter).then(verses => {
+    getChapter(translation, bookId, chapter).then((verses: Verse[]) => {
       if (!active) return;
-      const text = verses.map(v => v.text).join(' ');
+      const text = verses.map((v: Verse) => v.text).join(' ');
       
       const isEnglish = ['kjv', 'web', 'bbe'].includes(translation);
       const u = new SpeechSynthesisUtterance(text);
@@ -45,7 +44,7 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({ translation, bookId, c
       // Auto-play when ready
       window.speechSynthesis.speak(u);
       setIsPlaying(true);
-    }).catch(err => {
+    }).catch((err: unknown) => {
       console.error(err);
       setIsLoading(false);
     });
@@ -73,10 +72,10 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({ translation, bookId, c
     // Changing speed requires recreating the utterance for it to take effect in most browsers.
     // However, to keep it simple, we just save the setting state. It will apply cleanly on the next chapter.
     // For immediate effect (optional): we could cancel and restart, but it restarts from the beginning.
-    toastSpeed(nextSpeed);
+    toastSpeed();
   };
   
-  const toastSpeed = (s: number) => {
+  const toastSpeed = () => {
     // If you had a toast here...
   };
 
