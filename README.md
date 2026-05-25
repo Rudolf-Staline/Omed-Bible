@@ -69,6 +69,12 @@ L’application suit une direction visuelle calme, adulte et lisible. L’object
 
 ---
 
+## Documentation
+
+Un guide utilisateur court est disponible dans [`docs/USER_GUIDE.md`](docs/USER_GUIDE.md). Il couvre la lecture, les traductions, la comparaison, l’audio, les marque-pages, les notes, les surlignages, les parcours et la synchronisation Google Drive.
+
+---
+
 ## Traductions disponibles
 
 | Traduction | Code | Langue | Source API |
@@ -120,13 +126,21 @@ Application locale : `http://localhost:5173`
 
 ### Variables d’environnement
 
-Pour activer les traductions dépendant d’API.Bible, créez un fichier `.env` à la racine du projet :
+Copiez le fichier d’exemple puis renseignez les valeurs nécessaires :
+
+```bash
+cp .env.example .env
+```
 
 ```env
 VITE_BIBLE_API_KEY=votre_cle_api_bible
+VITE_GOOGLE_CLIENT_ID=votre_client_id_google
 ```
 
-Clé disponible sur https://scripture.api.bible.
+- `VITE_BIBLE_API_KEY` : clé utilisée pour les traductions dépendant d’API.Bible.
+- `VITE_GOOGLE_CLIENT_ID` : identifiant OAuth utilisé pour Google Sign-In et la synchronisation Google Drive AppData.
+
+Clé API.Bible disponible sur https://scripture.api.bible.
 
 ---
 
@@ -147,6 +161,8 @@ src/
 ## Déploiement
 
 Le projet est déployé sur Vercel à chaque push sur `main`.
+
+Configurez les variables d’environnement nécessaires dans les paramètres du projet Vercel avant le déploiement.
 
 Configuration de proxy dans `vercel.json` :
 
