@@ -135,6 +135,11 @@ src/
 
 ---
 
+## Documentation
+
+- [Guide utilisateur Omed Scripture](docs/USER_GUIDE.md)
+
+---
 ## 🌍 Déploiement
 
 Le projet est déployé automatiquement sur **Vercel** à chaque push sur la branche `main`.
