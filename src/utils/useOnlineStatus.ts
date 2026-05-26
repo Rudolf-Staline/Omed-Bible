@@ -1,21 +1,17 @@
 import { useEffect, useState } from 'react';
 
-const getOnlineStatus = () => {
-  if (typeof window === 'undefined' || typeof navigator === 'undefined') {
+const getInitialOnlineStatus = (): boolean => {
+  if (typeof navigator === 'undefined') {
     return true;
   }
 
   return navigator.onLine;
 };
 
-export const useOnlineStatus = () => {
-  const [isOnline, setIsOnline] = useState<boolean>(getOnlineStatus);
+export const useOnlineStatus = (): boolean => {
+  const [isOnline, setIsOnline] = useState<boolean>(getInitialOnlineStatus);
 
   useEffect(() => {
-    if (typeof window === 'undefined') {
-      return;
-    }
-
     const goOnline = () => setIsOnline(true);
     const goOffline = () => setIsOnline(false);
 

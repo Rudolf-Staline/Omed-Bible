@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { getChapter } from '../../utils/bibleApi';
 import type { Verse } from '../../utils/bibleApi';
-import { getCachedChapter, setCachedChapter } from '../../utils/chapterCache';
-import { useOnlineStatus } from '../../utils/useOnlineStatus';
 import { useSettingsStore } from '../../store/useSettingsStore';
 import { useHighlightsStore } from '../../store/useHighlightsStore';
 import type { HighlightColor } from '../../store/useHighlightsStore';
 import { VerseActions } from './VerseActions';
+import { cacheChapter, getCachedChapter } from '../../utils/chapterCache';
+import { useOnlineStatus } from '../../utils/useOnlineStatus';
+import { LoadingState } from '../../components/LoadingState';
+import { ErrorState } from '../../components/ErrorState';
 import clsx from 'clsx';
 
 interface ChapterViewProps {
@@ -20,61 +22,51 @@ export const ChapterView: React.FC<ChapterViewProps> = ({ translation, bookId, c
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedVerseId, setSelectedVerseId] = useState<string | null>(null);
+  const isOnline = useOnlineStatus();
 
   const settings = useSettingsStore((state) => state.settings);
   const highlights = useHighlightsStore((state) => state.highlights);
-  const isOnline = useOnlineStatus();
 
   useEffect(() => {
     let mounted = true;
-
-    const chapterKey = { translation, bookId, chapter };
-
-    const loadChapter = async () => {
+    const fetchChapter = async () => {
       setLoading(true);
       setError(null);
 
-      if (!isOnline) {
-        const cached = getCachedChapter(chapterKey);
-        if (mounted) {
-          if (cached) {
-            setVerses(cached);
-          } else {
-            setVerses([]);
-            setError('Ce chapitre n’est pas encore disponible hors ligne.');
-          }
-          setLoading(false);
-        }
+      const cached = getCachedChapter(translation, bookId, chapter);
+      if (!isOnline && cached) {
+        setVerses(cached);
+        setLoading(false);
+        return;
+      }
+
+      if (!isOnline && !cached) {
+        setVerses([]);
+        setError('Ce chapitre n’est pas encore disponible sans connexion.');
+        setLoading(false);
         return;
       }
 
       try {
         const data = await getChapter(translation, bookId, chapter);
-        if (mounted) {
-          setVerses(data);
-          setCachedChapter(chapterKey, data);
-        }
+        cacheChapter(translation, bookId, chapter, data);
+        if (mounted) setVerses(data);
       } catch (err: any) {
-        const cached = getCachedChapter(chapterKey);
-        if (mounted) {
-          if (cached) {
-            setVerses(cached);
-          } else {
-            setError(err.message || 'Erreur lors du chargement du chapitre');
-          }
+        if (cached) {
+          if (mounted) setVerses(cached);
+        } else if (mounted) {
+          setError(err.message || 'Erreur lors du chargement du chapitre');
         }
       } finally {
         if (mounted) setLoading(false);
       }
     };
-
-    loadChapter();
-
+    fetchChapter();
     return () => { mounted = false; };
   }, [translation, bookId, chapter, isOnline]);
 
-  if (loading) return <div className="py-20 text-center text-text-muted animate-pulse">Chargement en cours...</div>;
-  if (error) return <div className="py-20 text-center text-red-500">{error}</div>;
+  if (loading) return <LoadingState title="Chargement du chapitre" message="Nous ouvrons ce passage." />;
+  if (error) return <ErrorState title="Chapitre indisponible" message={error} />;
 
   const fontClass = settings.fontFamily === 'Lora' ? 'font-body' : 'font-sans';
 
@@ -91,14 +83,14 @@ export const ChapterView: React.FC<ChapterViewProps> = ({ translation, bookId, c
     Large: 'leading-[2.2]',
   };
 
-  const readingWidthClasses = {
+  const widthClasses = {
     Narrow: 'max-w-2xl',
     Comfortable: 'max-w-3xl',
-    Wide: 'max-w-4xl',
+    Wide: 'max-w-5xl',
   };
 
-  const readingDensityClasses = {
-    Compact: 'space-y-3.5',
+  const densityClasses = {
+    Compact: 'space-y-3',
     Aired: 'space-y-5',
   };
 
@@ -114,12 +106,12 @@ export const ChapterView: React.FC<ChapterViewProps> = ({ translation, bookId, c
   };
 
   return (
-    <div className={`${readingWidthClasses[settings.readingWidth]} mx-auto pb-32 px-1 sm:px-2 ${fontClass} ${sizeClasses[settings.fontSize]} ${leadingClasses[settings.lineHeight]}`}>
+    <div className={`${widthClasses[settings.readingWidth]} mx-auto pb-32 px-1 sm:px-2 ${fontClass} ${sizeClasses[settings.fontSize]} ${leadingClasses[settings.lineHeight]}`}>
       <h2 className="font-display text-3xl sm:text-4xl font-semibold mb-10 text-text-primary/95 mt-6 tracking-tight">
         {verses.length > 0 ? `${verses[0].book_name} ${chapter}` : `${bookId} ${chapter}`}
       </h2>
 
-      <div className={readingDensityClasses[settings.readingDensity]}>
+      <div className={densityClasses[settings.readingDensity]}>
         {verses.map((verse) => {
           const verseId = `${translation}-${bookId}-${chapter}-${verse.verse}`;
           const isSelected = selectedVerseId === verseId;

@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-label="Omed Scripture preview">
+  <rect width="1200" height="630" fill="#111214"/>
+  <rect x="72" y="72" width="1056" height="486" rx="42" fill="#f6f0df" opacity="0.06"/>
+  <text x="120" y="265" fill="#d6b56d" font-family="Georgia, serif" font-size="78" font-weight="600">Omed Scripture</text>
+  <text x="120" y="345" fill="#f6f0df" font-family="Inter, Arial, sans-serif" font-size="34">Lire. Méditer. Retenir.</text>
+  <text x="120" y="410" fill="#b8b1a4" font-family="Inter, Arial, sans-serif" font-size="26">Lecture, notes, marque-pages, parcours et synchronisation biblique.</text>
+</svg>

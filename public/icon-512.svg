@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512" role="img" aria-label="Omed Scripture">
+  <rect width="512" height="512" rx="112" fill="#111214"/>
+  <rect x="86" y="86" width="340" height="340" rx="72" fill="#f6f0df" opacity="0.08"/>
+  <path d="M256 370c-64 0-112-48-112-114s48-114 112-114 112 48 112 114-48 114-112 114Zm0-48c38 0 62-27 62-66s-24-66-62-66-62 27-62 66 24 66 62 66Z" fill="#d6b56d"/>
+</svg>

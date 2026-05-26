@@ -1,99 +1,72 @@
 import type { Verse } from './bibleApi';
 
-const MAX_RECENT_CHAPTERS = 20;
-const CHAPTER_CACHE_PREFIX = 'omed_bible_chapter';
-const CHAPTER_CACHE_INDEX_KEY = 'omed_bible_chapter_index';
+interface CachedChapterEntry {
+  key: string;
+  verses: Verse[];
+  updatedAt: number;
+}
 
-type ChapterKey = {
-  translation: string;
-  bookId: string;
-  chapter: number;
-};
+const STORAGE_KEY = 'omed_bible_recent_chapters';
+const MAX_CACHED_CHAPTERS = 20;
 
-const getStorage = () => {
-  if (typeof window === 'undefined') {
-    return null;
-  }
+const buildChapterCacheKey = (translation: string, bookId: string, chapter: number): string =>
+  `${translation}:${bookId}:${chapter}`;
+
+const parseCache = (raw: string | null): CachedChapterEntry[] => {
+  if (!raw) return [];
 
   try {
-    return window.localStorage;
-  } catch {
-    return null;
-  }
-};
+    const parsed = JSON.parse(raw) as CachedChapterEntry[];
+    if (!Array.isArray(parsed)) return [];
 
-const getCacheKey = ({ translation, bookId, chapter }: ChapterKey) => `${CHAPTER_CACHE_PREFIX}:${translation}:${bookId}:${chapter}`;
-
-const readIndex = (storage: Storage): string[] => {
-  try {
-    const raw = storage.getItem(CHAPTER_CACHE_INDEX_KEY);
-    if (!raw) {
-      return [];
-    }
-
-    const parsed = JSON.parse(raw);
-    if (!Array.isArray(parsed)) {
-      return [];
-    }
-
-    return parsed.filter((item): item is string => typeof item === 'string');
-  } catch {
+    return parsed.filter((entry) =>
+      entry &&
+      typeof entry.key === 'string' &&
+      Array.isArray(entry.verses) &&
+      typeof entry.updatedAt === 'number'
+    );
+  } catch (error) {
+    console.error('Failed to parse chapter cache', error);
     return [];
   }
 };
 
-const writeIndex = (storage: Storage, index: string[]) => {
-  try {
-    storage.setItem(CHAPTER_CACHE_INDEX_KEY, JSON.stringify(index));
-  } catch {
-    // ignore write errors
-  }
+const readCacheEntries = (): CachedChapterEntry[] => {
+  if (typeof localStorage === 'undefined') return [];
+  return parseCache(localStorage.getItem(STORAGE_KEY));
 };
 
-export const getCachedChapter = (key: ChapterKey): Verse[] | null => {
-  const storage = getStorage();
-  if (!storage) return null;
-
-  try {
-    const raw = storage.getItem(getCacheKey(key));
-    if (!raw) {
-      return null;
-    }
-
-    const parsed = JSON.parse(raw);
-    if (!Array.isArray(parsed)) {
-      return null;
-    }
-
-    return parsed as Verse[];
-  } catch {
-    return null;
-  }
+const saveCacheEntries = (entries: CachedChapterEntry[]) => {
+  if (typeof localStorage === 'undefined') return;
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(entries));
 };
 
-export const setCachedChapter = (key: ChapterKey, verses: Verse[]) => {
-  const storage = getStorage();
-  if (!storage) return;
+export const getCachedChapter = (
+  translation: string,
+  bookId: string,
+  chapter: number
+): Verse[] | null => {
+  const key = buildChapterCacheKey(translation, bookId, chapter);
+  const entries = readCacheEntries();
+  const match = entries.find((entry) => entry.key === key);
 
-  const cacheKey = getCacheKey(key);
+  return match?.verses ?? null;
+};
 
-  try {
-    storage.setItem(cacheKey, JSON.stringify(verses));
-  } catch {
-    return;
-  }
+export const cacheChapter = (
+  translation: string,
+  bookId: string,
+  chapter: number,
+  verses: Verse[]
+): void => {
+  const key = buildChapterCacheKey(translation, bookId, chapter);
+  const entries = readCacheEntries().filter((entry) => entry.key !== key);
 
-  const index = readIndex(storage);
-  const updated = [cacheKey, ...index.filter((item) => item !== cacheKey)].slice(0, MAX_RECENT_CHAPTERS);
-
-  const removed = index.filter((item) => !updated.includes(item));
-  removed.forEach((item) => {
-    try {
-      storage.removeItem(item);
-    } catch {
-      // ignore removal errors
-    }
+  entries.unshift({
+    key,
+    verses,
+    updatedAt: Date.now(),
   });
 
-  writeIndex(storage, updated);
+  saveCacheEntries(entries.slice(0, MAX_CACHED_CHAPTERS));
 };

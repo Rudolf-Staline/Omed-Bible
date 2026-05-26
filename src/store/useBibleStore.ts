@@ -36,8 +36,7 @@ export const useBibleStore = create<BibleState>((set) => ({
      
      const token = useAuthStore.getState().token;
      const synced = useSettingsStore.getState().synced;
-     const isOnline = typeof navigator === 'undefined' ? true : navigator.onLine;
-     if (token && synced && isOnline) {
+     if (token && synced) {
         syncFileToDrive(DRIVE_FILES.position, newState, token).catch(console.error);
      }
      
