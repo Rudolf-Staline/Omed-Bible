@@ -3,6 +3,7 @@ import { useNotesStore } from '../../store/useNotesStore';
 import { useNavigate } from 'react-router-dom';
 import { Edit3, Trash2, Check, X } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { EmptyState } from '../../components/EmptyState';
 
 export const NotesPage: React.FC = () => {
   const notes = useNotesStore((state) => state.notes);
@@ -27,16 +28,13 @@ export const NotesPage: React.FC = () => {
 
   if (notes.length === 0) {
     return (
-      <div className="max-w-3xl mx-auto py-20 text-center">
-        <Edit3 size={48} className="mx-auto text-text-muted mb-4 opacity-50" />
-        <h2 className="font-display text-2xl font-semibold text-text-primary mb-2">Aucune note pour le moment</h2>
-        <p className="text-text-secondary">Vos notes apparaîtront ici lorsque vous annoterez un verset.</p>
-        <button
-          onClick={() => navigate('/')}
-          className="mt-6 px-6 py-2 bg-bg-secondary text-text-primary rounded-lg font-medium hover:bg-border transition-colors"
-        >
-          Ouvrir la lecture
-        </button>
+      <div className="max-w-3xl mx-auto">
+        <EmptyState
+          title="Aucune note pour le moment"
+          message="Vos notes apparaîtront ici lorsque vous annoterez un verset."
+          actionLabel="Ouvrir la lecture"
+          onAction={() => navigate('/')}
+        />
       </div>
     );
   }

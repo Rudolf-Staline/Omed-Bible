@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { getChapter } from '../../utils/bibleApi';
 import type { Verse } from '../../utils/bibleApi';
 import { useSettingsStore } from '../../store/useSettingsStore';
@@ -6,6 +6,8 @@ import { useHighlightsStore } from '../../store/useHighlightsStore';
 import type { HighlightColor } from '../../store/useHighlightsStore';
 import { VerseActions } from './VerseActions';
 import clsx from 'clsx';
+import { LoadingState } from '../../components/LoadingState';
+import { ErrorState } from '../../components/ErrorState';
 
 interface ChapterViewProps {
   translation: string;
@@ -22,26 +24,25 @@ export const ChapterView: React.FC<ChapterViewProps> = ({ translation, bookId, c
   const settings = useSettingsStore((state) => state.settings);
   const highlights = useHighlightsStore((state) => state.highlights);
 
-  useEffect(() => {
-    let mounted = true;
-    const fetchChapter = async () => {
-      setLoading(true);
-      setError(null);
-      try {
-        const data = await getChapter(translation, bookId, chapter);
-        if (mounted) setVerses(data);
-      } catch (err: any) {
-        if (mounted) setError(err.message || 'Erreur lors du chargement du chapitre');
-      } finally {
-        if (mounted) setLoading(false);
-      }
-    };
-    fetchChapter();
-    return () => { mounted = false; };
+  const fetchChapter = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const data = await getChapter(translation, bookId, chapter);
+      setVerses(data);
+    } catch (err: any) {
+      setError(err.message || 'Erreur lors du chargement du chapitre');
+    } finally {
+      setLoading(false);
+    }
   }, [translation, bookId, chapter]);
 
-  if (loading) return <div className="py-20 text-center text-text-muted animate-pulse">Chargement en cours...</div>;
-  if (error) return <div className="py-20 text-center text-red-500">{error}</div>;
+  useEffect(() => {
+    void fetchChapter();
+  }, [fetchChapter]);
+
+  if (loading) return <LoadingState title="Chargement du chapitre" message="Nous ouvrons ce passage." />;
+  if (error) return <ErrorState title="Chapitre indisponible" message={error} onAction={fetchChapter} />;
 
   const fontClass = settings.fontFamily === 'Lora' ? 'font-body' : 'font-sans';
 

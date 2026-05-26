@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
 import { usePlansStore } from '../../store/usePlansStore';
 import { READING_PLANS } from './PlansPage';
+import { ErrorState } from '../../components/ErrorState';
 
 export const PlanDetail: React.FC = () => {
   const { planId } = useParams<{ planId: string }>();
@@ -17,11 +18,12 @@ export const PlanDetail: React.FC = () => {
 
   if (!plan || !planProgress) {
     return (
-      <div className="py-20 text-center text-text-muted">
-        Parcours introuvable ou non démarré.
-        <br />
-        <button onClick={() => navigate('/plans')} className="text-accent-brown underline mt-4">Retour aux parcours</button>
-      </div>
+      <ErrorState
+        title="Parcours indisponible"
+        message="Ce parcours est introuvable ou n'a pas encore été démarré."
+        actionLabel="Retour aux parcours"
+        onAction={() => navigate('/plans')}
+      />
     );
   }
 
