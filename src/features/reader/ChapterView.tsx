@@ -7,6 +7,8 @@ import type { HighlightColor } from '../../store/useHighlightsStore';
 import { VerseActions } from './VerseActions';
 import { cacheChapter, getCachedChapter } from '../../utils/chapterCache';
 import { useOnlineStatus } from '../../utils/useOnlineStatus';
+import { LoadingState } from '../../components/LoadingState';
+import { ErrorState } from '../../components/ErrorState';
 import clsx from 'clsx';
 
 interface ChapterViewProps {
@@ -63,8 +65,8 @@ export const ChapterView: React.FC<ChapterViewProps> = ({ translation, bookId, c
     return () => { mounted = false; };
   }, [translation, bookId, chapter, isOnline]);
 
-  if (loading) return <div className="py-20 text-center text-text-muted animate-pulse">Chargement en cours...</div>;
-  if (error) return <div className="py-20 text-center text-red-500">{error}</div>;
+  if (loading) return <LoadingState title="Chargement du chapitre" message="Nous ouvrons ce passage." />;
+  if (error) return <ErrorState title="Chapitre indisponible" message={error} />;
 
   const fontClass = settings.fontFamily === 'Lora' ? 'font-body' : 'font-sans';
 
