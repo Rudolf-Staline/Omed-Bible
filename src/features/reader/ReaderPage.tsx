@@ -5,6 +5,7 @@ import { BIBLE_BOOKS, FEATURED_TRANSLATIONS } from '../../utils/bibleApi';
 import { ChapterView } from './ChapterView';
 import { AudioPlayer } from '../../components/AudioPlayer';
 import { ChevronDown, ChevronLeft, ChevronRight, Headphones, GitCompare } from 'lucide-react';
+import { useOnlineStatus } from '../../utils/useOnlineStatus';
 
 export const ReaderPage: React.FC = () => {
   const { translation, bookId, chapter } = useParams<{ translation: string; bookId: string; chapter: string }>();
@@ -16,6 +17,7 @@ export const ReaderPage: React.FC = () => {
   const setCompareTranslation = useBibleStore((state) => state.setCompareTranslation);
 
   const chapterNum = parseInt(chapter || '1', 10);
+  const isOnline = useOnlineStatus();
 
   useEffect(() => {
     if (translation && bookId && chapter) {
@@ -57,6 +59,12 @@ export const ReaderPage: React.FC = () => {
           </div>
 
           <div className="flex-1" />
+
+          {!isOnline && (
+            <span className="rounded-md border border-amber-700/30 bg-amber-900/20 px-2 py-1 text-xs font-medium text-amber-200">
+              Hors ligne
+            </span>
+          )}
 
           <button onClick={() => setShowAudio(true)} className="flex items-center gap-2 rounded-lg border border-border/70 px-3 py-2 text-sm text-text-secondary transition-colors hover:text-text-primary hover:bg-bg-card/60">
             <Headphones size={17} strokeWidth={1.5} />
