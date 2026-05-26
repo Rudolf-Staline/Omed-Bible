@@ -2,7 +2,7 @@ import React from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, BookOpen } from 'lucide-react';
 import { usePlansStore } from '../../store/usePlansStore';
-import { READING_PLANS } from './PlansPage';
+import { READING_PLANS } from './plansData';
 
 const PLAN_READING_PATHS: Record<string, { bookId: string; maxChapter: number }> = {
   'bible-365': { bookId: 'genese', maxChapter: 50 },

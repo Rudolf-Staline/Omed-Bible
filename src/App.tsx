@@ -1,17 +1,20 @@
 import { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { useAuthStore } from './store/useAuthStore';
-import { LoginPage } from './features/auth/LoginPage';
+import { Suspense, lazy } from 'react';
 import { Layout } from './components/Layout';
 import { ReaderPage } from './features/reader/ReaderPage';
-import { SearchPage } from './features/search/SearchPage';
-import { FavoritesPage } from './features/favorites/FavoritesPage';
-import { NotesPage } from './features/notes/NotesPage';
-import { PlansPage } from './features/plans/PlansPage';
-import { SettingsPage } from './features/settings/SettingsPage';
-import { PlanDetail } from './features/plans/PlanDetail';
 import { HomePage } from './features/home/HomePage';
 import { useBibleStore } from './store/useBibleStore';
+import { LoadingState } from './components/LoadingState';
+
+const LoginPage = lazy(() => import('./features/auth/LoginPage').then(m => ({ default: m.LoginPage })));
+const SearchPage = lazy(() => import('./features/search/SearchPage').then(m => ({ default: m.SearchPage })));
+const FavoritesPage = lazy(() => import('./features/favorites/FavoritesPage').then(m => ({ default: m.FavoritesPage })));
+const NotesPage = lazy(() => import('./features/notes/NotesPage').then(m => ({ default: m.NotesPage })));
+const PlansPage = lazy(() => import('./features/plans/PlansPage').then(m => ({ default: m.PlansPage })));
+const PlanDetail = lazy(() => import('./features/plans/PlanDetail').then(m => ({ default: m.PlanDetail })));
+const SettingsPage = lazy(() => import('./features/settings/SettingsPage').then(m => ({ default: m.SettingsPage })));
 import { useSettingsStore } from './store/useSettingsStore';
 import { useFavoritesStore } from './store/useFavoritesStore';
 import { useHighlightsStore } from './store/useHighlightsStore';
@@ -77,22 +80,26 @@ function App() {
     }
   }, [token, synced, loadSettings, loadFavorites, loadHighlights, loadNotes, loadPlans, setPosition]);
 
+  const SuspenseFallback = <LoadingState title="Chargement…" message="Veuillez patienter." compact />;
+
   return (
     <Router>
-      <Routes>
-        <Route path="/login" element={<LoginPage />} />
-        
-        <Route element={<Layout />}>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/read/:translation/:bookId/:chapter" element={<ReaderPage />} />
-          <Route path="/search" element={<SearchPage />} />
-          <Route path="/favorites" element={<FavoritesPage />} />
-          <Route path="/notes" element={<NotesPage />} />
-          <Route path="/plans" element={<PlansPage />} />
-          <Route path="/plans/:planId" element={<PlanDetail />} />
-          <Route path="/settings" element={<SettingsPage />} />
-        </Route>
-      </Routes>
+      <Suspense fallback={SuspenseFallback}>
+        <Routes>
+          <Route path="/login" element={<LoginPage />} />
+
+          <Route element={<Layout />}>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/read/:translation/:bookId/:chapter" element={<ReaderPage />} />
+            <Route path="/search" element={<SearchPage />} />
+            <Route path="/favorites" element={<FavoritesPage />} />
+            <Route path="/notes" element={<NotesPage />} />
+            <Route path="/plans" element={<PlansPage />} />
+            <Route path="/plans/:planId" element={<PlanDetail />} />
+            <Route path="/settings" element={<SettingsPage />} />
+          </Route>
+        </Routes>
+      </Suspense>
     </Router>
   );
 }
