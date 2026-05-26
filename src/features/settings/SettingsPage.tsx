@@ -208,7 +208,7 @@ export const SettingsPage: React.FC = () => {
               <SegmentedControl values={readingWidths} selected={settings.readingWidth} onSelect={(readingWidth) => updateSettings({ readingWidth })} />
             </div>
             <div>
-              <label className="block text-sm font-medium text-text-secondary mb-2">Densité de lecture</label>
+              <label className="block text-sm font-medium text-text-secondary mb-2">Affichage</label>
               <SegmentedControl values={readingDensities} selected={settings.readingDensity} onSelect={(readingDensity) => updateSettings({ readingDensity })} />
             </div>
             <label className="flex items-center justify-between p-4 rounded-lg border border-border bg-bg-primary cursor-pointer">
