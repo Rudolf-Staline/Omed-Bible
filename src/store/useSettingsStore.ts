@@ -7,6 +7,8 @@ export type LineHeight = 'Normal' | 'Relaxed' | 'Large';
 export type FontFamily = 'Lora' | 'Inter';
 export type Theme = 'Light' | 'Sepia' | 'Dark';
 export type Language = 'Français' | 'English';
+export type ReadingWidth = 'Narrow' | 'Comfortable' | 'Wide';
+export type ReadingDensity = 'Compact' | 'Aired';
 
 export interface Settings {
   defaultTranslation: string;
@@ -15,12 +17,15 @@ export interface Settings {
   fontFamily: FontFamily;
   theme: Theme;
   language: Language;
+  readingWidth: ReadingWidth;
+  readingDensity: ReadingDensity;
+  showVerseNumbers: boolean;
 }
 
 interface SettingsState {
   settings: Settings;
   updateSettings: (newSettings: Partial<Settings>) => void;
-  loadSettings: (settings: Settings) => void;
+  loadSettings: (settings: Partial<Settings>) => void;
   synced: boolean;
   setSynced: (synced: boolean) => void;
 }
@@ -32,6 +37,9 @@ const DEFAULT_SETTINGS: Settings = {
   fontFamily: 'Lora',
   theme: 'Light',
   language: 'Français',
+  readingWidth: 'Comfortable',
+  readingDensity: 'Aired',
+  showVerseNumbers: true,
 };
 
 const getInitialSettings = (): Settings => {
@@ -65,7 +73,11 @@ export const useSettingsStore = create<SettingsState>((set) => ({
       
       return { settings: updated };
     }),
-  loadSettings: (settings) => set({ settings }),
+  loadSettings: (settings) => {
+    const mergedSettings = { ...DEFAULT_SETTINGS, ...settings };
+    localStorage.setItem('omed_bible_settings', JSON.stringify(mergedSettings));
+    set({ settings: mergedSettings });
+  },
   setSynced: (synced) => {
     localStorage.setItem('omed_bible_synced', String(synced));
     set({ synced });

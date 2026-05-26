@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useSettingsStore } from '../../store/useSettingsStore';
-import type { FontSize, LineHeight, FontFamily, Theme, Language } from '../../store/useSettingsStore';
+import type { FontSize, LineHeight, FontFamily, Theme, Language, ReadingWidth, ReadingDensity } from '../../store/useSettingsStore';
 import { useAuthStore } from '../../store/useAuthStore';
 import { useBibleStore } from '../../store/useBibleStore';
 import { useFavoritesStore } from '../../store/useFavoritesStore';
@@ -31,6 +31,8 @@ export const SettingsPage: React.FC = () => {
   const fontFamilies: FontFamily[] = ['Lora', 'Inter'];
   const themes: Theme[] = ['Light', 'Sepia', 'Dark'];
   const languages: Language[] = ['Français', 'English'];
+  const readingWidths: ReadingWidth[] = ['Narrow', 'Comfortable', 'Wide'];
+  const readingDensities: ReadingDensity[] = ['Compact', 'Aired'];
 
   const handleSyncData = async () => {
     if (!token) {
@@ -219,6 +221,73 @@ export const SettingsPage: React.FC = () => {
                     {t}
                   </button>
                 ))}
+              </div>
+            </div>
+
+
+            <div className="pt-2 border-t border-border/70">
+              <h3 className="font-display font-semibold text-lg text-text-primary mb-4">Lecture</h3>
+
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-text-secondary mb-2">Largeur de lecture</label>
+                  <div className="flex gap-2 bg-bg-primary p-1 rounded-lg border border-border">
+                    {readingWidths.map((width) => (
+                      <button
+                        key={width}
+                        onClick={() => updateSettings({ readingWidth: width })}
+                        className={`flex-1 py-1.5 rounded-md text-sm font-medium transition-colors ${
+                          settings.readingWidth === width
+                            ? 'bg-bg-card shadow-sm text-text-primary border border-border/50'
+                            : 'text-text-muted hover:text-text-primary'
+                        }`}
+                      >
+                        {width}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-text-secondary mb-2">Densité de lecture</label>
+                  <div className="flex gap-2 bg-bg-primary p-1 rounded-lg border border-border">
+                    {readingDensities.map((density) => (
+                      <button
+                        key={density}
+                        onClick={() => updateSettings({ readingDensity: density })}
+                        className={`flex-1 py-1.5 rounded-md text-sm font-medium transition-colors ${
+                          settings.readingDensity === density
+                            ? 'bg-bg-card shadow-sm text-text-primary border border-border/50'
+                            : 'text-text-muted hover:text-text-primary'
+                        }`}
+                      >
+                        {density}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-between bg-bg-primary border border-border rounded-lg px-4 py-3">
+                  <div>
+                    <p className="text-sm font-medium text-text-primary">Afficher les numéros de verset</p>
+                    <p className="text-xs text-text-muted">Masquez-les pour une lecture immersive.</p>
+                  </div>
+                  <button
+                    type="button"
+                    role="switch"
+                    aria-checked={settings.showVerseNumbers}
+                    onClick={() => updateSettings({ showVerseNumbers: !settings.showVerseNumbers })}
+                    className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
+                      settings.showVerseNumbers ? 'bg-accent-gold' : 'bg-border'
+                    }`}
+                  >
+                    <span
+                      className={`inline-block h-5 w-5 transform rounded-full bg-white transition-transform ${
+                        settings.showVerseNumbers ? 'translate-x-5' : 'translate-x-1'
+                      }`}
+                    />
+                  </button>
+                </div>
               </div>
             </div>
 
