@@ -2,7 +2,6 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Calendar, ChevronRight } from 'lucide-react';
 import { usePlansStore } from '../../store/usePlansStore';
-import { EmptyState } from '../../components/EmptyState';
 
 export const READING_PLANS = [
   { id: 'bible-365', name: 'La Bible en 1 an', days: 365, description: 'Un parcours complet, régulier et structuré sur l’ensemble des Écritures.' },
@@ -35,12 +34,8 @@ export const PlansPage: React.FC = () => {
       </p>
 
       {READING_PLANS.length === 0 ? (
-        <div className="bg-bg-card border border-border rounded-xl">
-          <EmptyState
-            title="Aucun parcours disponible"
-            message="Les parcours de lecture apparaîtront ici."
-            compact
-          />
+        <div className="bg-bg-card border border-border rounded-xl p-8 text-center text-text-secondary">
+          Aucun parcours disponible pour le moment.
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

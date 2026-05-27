@@ -26,7 +26,7 @@ export const LoginPage: React.FC = () => {
         );
         navigate('/');
       } catch (error) {
-        console.error('Failed to fetch user info', error);
+        console.error('Failed to fetch user info');
       }
     },
     scope: 'https://www.googleapis.com/auth/drive.appdata',

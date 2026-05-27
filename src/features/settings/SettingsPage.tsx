@@ -69,7 +69,7 @@ export const SettingsPage: React.FC = () => {
       setSynced(true);
       toast.success('Synchronisation réussie !');
     } catch (err) {
-      console.error('Drive sync failed', err);
+      console.error('Drive sync failed');
       toast.error('Échec de la synchronisation.');
     } finally {
       setSyncing(false);
@@ -90,7 +90,7 @@ export const SettingsPage: React.FC = () => {
       setSynced(true);
       toast.success('Sauvegarde en ligne réussie !');
     } catch (err) {
-      console.error('Drive upload failed', err);
+      console.error('Drive upload failed');
       toast.error('Échec de la sauvegarde.');
     } finally {
       setSyncing(false);
