@@ -121,7 +121,6 @@ export const SettingsPage: React.FC = () => {
     <div className="flex gap-2 bg-bg-primary p-1 rounded-lg border border-border">
       {values.map((value) => (
         <button
-          type="button"
           key={value}
           onClick={() => onSelect(value)}
           className={`flex-1 py-2 rounded-md text-sm font-medium transition-colors ${
@@ -159,7 +158,6 @@ export const SettingsPage: React.FC = () => {
               <div className="flex gap-2 bg-bg-primary p-1 rounded-lg border border-border">
                 {fontFamilies.map((ff) => (
                   <button
-                    type="button"
                     key={ff}
                     onClick={() => updateSettings({ fontFamily: ff })}
                     className={`flex-1 py-2 rounded-md text-sm font-medium transition-colors ${
@@ -244,12 +242,12 @@ export const SettingsPage: React.FC = () => {
               </div>
 
               <div className="flex flex-col gap-3">
-                <button type="button" onClick={handleSyncData} disabled={syncing} className="flex items-center justify-center gap-2 w-full bg-accent-gold hover:bg-accent-brown text-white py-3 rounded-lg font-medium transition-colors disabled:opacity-50">
+                <button onClick={handleSyncData} disabled={syncing} className="flex items-center justify-center gap-2 w-full bg-accent-gold hover:bg-accent-brown text-white py-3 rounded-lg font-medium transition-colors disabled:opacity-50">
                   <Cloud size={20} />
                   {syncing ? 'Synchronisation...' : 'Restaurer depuis Google Drive'}
                 </button>
 
-                <button type="button" onClick={handleForceUpload} disabled={syncing} className="flex items-center justify-center gap-2 w-full bg-bg-secondary hover:bg-border text-text-primary py-3 rounded-lg font-medium transition-colors disabled:opacity-50 border border-border">
+                <button onClick={handleForceUpload} disabled={syncing} className="flex items-center justify-center gap-2 w-full bg-bg-secondary hover:bg-border text-text-primary py-3 rounded-lg font-medium transition-colors disabled:opacity-50 border border-border">
                   <RefreshCw size={20} />
                   Sauvegarder sur Google Drive
                 </button>
@@ -262,7 +260,6 @@ export const SettingsPage: React.FC = () => {
 
               <div className="pt-4 border-t border-border mt-4">
                 <button
-                  type="button"
                   onClick={() => {
                     logout();
                     setSynced(false);
@@ -277,7 +274,7 @@ export const SettingsPage: React.FC = () => {
           ) : (
             <div className="text-center py-6">
               <p className="text-text-secondary mb-4">Connectez-vous pour synchroniser vos données sur tous vos appareils.</p>
-              <button type="button" onClick={() => navigate('/login')} className="bg-bg-secondary hover:bg-border text-text-primary px-6 py-2.5 rounded-lg font-medium transition-colors">Se connecter</button>
+              <button onClick={() => navigate('/login')} className="bg-bg-secondary hover:bg-border text-text-primary px-6 py-2.5 rounded-lg font-medium transition-colors">Se connecter</button>
             </div>
           )}
         </section>
@@ -287,7 +284,7 @@ export const SettingsPage: React.FC = () => {
             <Database size={20} className="text-accent-brown" /> Données personnelles
           </h2>
           <div className="space-y-4">
-            <button type="button" onClick={exportData} className="flex items-center gap-3 w-full p-4 rounded-lg border border-border hover:bg-bg-primary transition-colors text-left">
+            <button onClick={exportData} className="flex items-center gap-3 w-full p-4 rounded-lg border border-border hover:bg-bg-primary transition-colors text-left">
               <div className="p-2 bg-bg-secondary rounded-lg text-accent-brown"><Download size={20} /></div>
               <div>
                 <h4 className="font-medium text-text-primary">Exporter mes données</h4>
@@ -295,7 +292,7 @@ export const SettingsPage: React.FC = () => {
               </div>
             </button>
 
-            <button type="button" onClick={clearData} className="flex items-center gap-3 w-full p-4 rounded-lg border border-red-100 hover:bg-red-50 transition-colors text-left">
+            <button onClick={clearData} className="flex items-center gap-3 w-full p-4 rounded-lg border border-red-100 hover:bg-red-50 transition-colors text-left">
               <div className="p-2 bg-red-100 rounded-lg text-red-500"><Trash2 size={20} /></div>
               <div>
                 <h4 className="font-medium text-red-600">Effacer toutes les données</h4>

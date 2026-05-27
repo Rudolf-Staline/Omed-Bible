@@ -67,12 +67,12 @@ export const ReaderPage: React.FC = () => {
 
           <div className="flex-1" />
 
-          <button type="button" onClick={() => setShowAudio(true)} className="flex items-center gap-2 rounded-lg border border-border/70 px-3 py-2 text-sm text-text-secondary transition-colors hover:text-text-primary hover:bg-bg-card/60">
+          <button onClick={() => setShowAudio(true)} className="flex items-center gap-2 rounded-lg border border-border/70 px-3 py-2 text-sm text-text-secondary transition-colors hover:text-text-primary hover:bg-bg-card/60">
             <Headphones size={17} strokeWidth={1.5} />
             <span className="hidden sm:inline">Audio</span>
           </button>
 
-          <button type="button" onClick={() => setCompareTranslation(compareTranslation ? null : 'kjv')} className={`flex items-center gap-2 rounded-lg border px-3 py-2 text-sm transition-colors ${compareTranslation ? 'border-accent-gold/40 text-accent-gold bg-accent-gold/10' : 'border-border/70 text-text-secondary hover:text-text-primary hover:bg-bg-card/60'}`}>
+          <button onClick={() => setCompareTranslation(compareTranslation ? null : 'kjv')} className={`flex items-center gap-2 rounded-lg border px-3 py-2 text-sm transition-colors ${compareTranslation ? 'border-accent-gold/40 text-accent-gold bg-accent-gold/10' : 'border-border/70 text-text-secondary hover:text-text-primary hover:bg-bg-card/60'}`}>
             <GitCompare size={17} strokeWidth={1.5} />
             <span className="hidden sm:inline">Comparer</span>
           </button>
@@ -100,11 +100,11 @@ export const ReaderPage: React.FC = () => {
       </div>
 
       <footer className="mt-10 mb-4 flex items-center justify-between border-t border-border pt-5">
-        <button type="button" onClick={() => chapterNum > 1 ? navigate(`/read/${translation}/${bookId}/${chapterNum - 1}`) : (() => { const i = BIBLE_BOOKS.findIndex((b) => b.id === bookId); if (i > 0) { const p = BIBLE_BOOKS[i - 1]; navigate(`/read/${translation}/${p.id}/${p.chapters}`); } })()} className="flex items-center gap-2 text-sm text-text-secondary hover:text-accent-gold transition-colors">
+        <button onClick={() => chapterNum > 1 ? navigate(`/read/${translation}/${bookId}/${chapterNum - 1}`) : (() => { const i = BIBLE_BOOKS.findIndex((b) => b.id === bookId); if (i > 0) { const p = BIBLE_BOOKS[i - 1]; navigate(`/read/${translation}/${p.id}/${p.chapters}`); } })()} className="flex items-center gap-2 text-sm text-text-secondary hover:text-accent-gold transition-colors">
           <ChevronLeft size={18} />
           Chapitre précédent
         </button>
-        <button type="button" onClick={() => chapterNum < currentBook.chapters ? navigate(`/read/${translation}/${bookId}/${chapterNum + 1}`) : (() => { const i = BIBLE_BOOKS.findIndex((b) => b.id === bookId); if (i < BIBLE_BOOKS.length - 1) { const n = BIBLE_BOOKS[i + 1]; navigate(`/read/${translation}/${n.id}/1`); } })()} className="flex items-center gap-2 text-sm text-text-secondary hover:text-accent-gold transition-colors">
+        <button onClick={() => chapterNum < currentBook.chapters ? navigate(`/read/${translation}/${bookId}/${chapterNum + 1}`) : (() => { const i = BIBLE_BOOKS.findIndex((b) => b.id === bookId); if (i < BIBLE_BOOKS.length - 1) { const n = BIBLE_BOOKS[i + 1]; navigate(`/read/${translation}/${n.id}/1`); } })()} className="flex items-center gap-2 text-sm text-text-secondary hover:text-accent-gold transition-colors">
           Chapitre suivant
           <ChevronRight size={18} />
         </button>
