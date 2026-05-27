@@ -20,7 +20,7 @@ const getFileId = async (fileName: string, token: string): Promise<string | null
       return data.files[0].id;
     }
   } catch (error) {
-    console.error(`Error finding file ${fileName}:`, error);
+    console.error(`Error finding file ${fileName}`);
   }
   return null;
 };
@@ -52,7 +52,7 @@ export const syncFileToDrive = async (fileName: string, data: any, token: string
     if (!res.ok) throw new Error(`Failed to upload ${fileName}`);
     return true;
   } catch (error) {
-    console.error(`Error uploading ${fileName}:`, error);
+    console.error(`Error uploading ${fileName}`);
     return false;
   }
 };
@@ -69,7 +69,7 @@ export const syncFileFromDrive = async (fileName: string, token: string) => {
     if (!res.ok) throw new Error(`Failed to download ${fileName}`);
     return await res.json();
   } catch (error) {
-    console.error(`Error downloading ${fileName}:`, error);
+    console.error(`Error downloading ${fileName}`);
     return null;
   }
 };

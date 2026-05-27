@@ -2,9 +2,6 @@ import React, { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Search as SearchIcon, ChevronRight, Loader2 } from 'lucide-react';
 import { searchVerses, FEATURED_TRANSLATIONS, BIBLE_BOOKS } from '../../utils/bibleApi';
-import { EmptyState } from '../../components/EmptyState';
-import { LoadingState } from '../../components/LoadingState';
-import { ErrorState } from '../../components/ErrorState';
 import type { SearchResult } from '../../utils/bibleApi';
 import { useSettingsStore } from '../../store/useSettingsStore';
 
@@ -90,24 +87,15 @@ export const SearchPage: React.FC = () => {
       )}
 
       {error && (
-        <div className="mb-6 border border-border rounded-xl bg-bg-card">
-          <ErrorState
-            title="Une erreur est survenue."
-            message={error}
-            compact
-          />
+        <div className="mb-6 p-4 rounded-lg border border-red-200 bg-red-50 text-red-800">
+          <p className="font-medium">Une erreur est survenue.</p>
+          <p className="text-sm mt-1">{error}</p>
         </div>
       )}
 
       <section className="space-y-4">
         {loading && (
-          <div className="border border-border rounded-xl bg-bg-card">
-            <LoadingState
-              title="Recherche en cours"
-              message="Merci de patienter."
-              compact
-            />
-          </div>
+          <div className="p-5 rounded-lg border border-border bg-bg-card text-text-secondary">Recherche en cours, merci de patienter.</div>
         )}
 
         {!loading && results.length > 0 && (
@@ -115,12 +103,9 @@ export const SearchPage: React.FC = () => {
         )}
 
         {!loading && !error && hasSearched && results.length === 0 && (
-          <div className="border border-border rounded-xl bg-bg-card">
-            <EmptyState
-              title="Aucun passage trouvé."
-              message="Affinez votre recherche avec un mot plus précis ou une autre formulation."
-              compact
-            />
+          <div className="text-center py-12 px-6 border border-border rounded-xl bg-bg-card">
+            <p className="text-text-primary text-lg font-medium">Aucun passage trouvé.</p>
+            <p className="text-text-secondary text-sm mt-2">Affinez votre recherche avec un mot plus précis ou une autre formulation.</p>
           </div>
         )}
 
