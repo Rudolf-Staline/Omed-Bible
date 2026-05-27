@@ -69,7 +69,7 @@ export const Sidebar: React.FC = () => {
           </div>
         ) : (
           <div className="mb-4 px-2">
-            <button onClick={() => navigate('/login')} className="w-full text-left text-sm text-accent-brown hover:text-text-primary transition-colors">
+            <button type="button" onClick={() => navigate('/login')} className="w-full text-left text-sm text-accent-brown hover:text-text-primary transition-colors">
               Se connecter
             </button>
           </div>

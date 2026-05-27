@@ -190,44 +190,46 @@ export const VerseActions: React.FC<VerseActionsProps> = ({ verse, verseId, tran
         <div className="flex items-center gap-2 px-2">
           {colors.map((c) => (
             <button
+              type="button"
               key={c.id}
               onClick={(e) => handleHighlight(c.id, e)}
               className="w-6 h-6 rounded-full border border-border shadow-sm flex items-center justify-center transition-transform hover:scale-110"
               style={{ backgroundColor: c.hex }}
+              aria-label={`Surligner en ${c.id}`}
             >
               {currentHighlight?.color === c.id && <Check size={12} className="text-black/50" />}
             </button>
           ))}
-          <button onClick={(e) => { e.stopPropagation(); setShowColors(false); }} className="p-1 hover:bg-bg-secondary rounded ml-2">
+          <button type="button" aria-label="Fermer les couleurs" onClick={(e) => { e.stopPropagation(); setShowColors(false); }} className="p-1 hover:bg-bg-secondary rounded ml-2">
             <X size={16} className="text-text-muted" />
           </button>
         </div>
       ) : (
         <>
-          <button onClick={handleFavorite} className="p-2 hover:bg-bg-secondary rounded-lg text-text-secondary transition-colors group" title="Favori">
+          <button type="button" aria-label="Ajouter aux favoris" onClick={handleFavorite} className="p-2 hover:bg-bg-secondary rounded-lg text-text-secondary transition-colors group" title="Favori">
              <Heart size={18} className={isFavorite ? 'fill-accent-gold text-accent-gold' : 'group-hover:text-accent-gold'} />
           </button>
-          <button onClick={handleNote} className="p-2 hover:bg-bg-secondary rounded-lg text-text-secondary transition-colors hover:text-accent-gold" title="Noter">
+          <button type="button" aria-label="Ajouter une note" onClick={handleNote} className="p-2 hover:bg-bg-secondary rounded-lg text-text-secondary transition-colors hover:text-accent-gold" title="Noter">
              <Edit3 size={18} />
           </button>
-          <button onClick={(e) => { e.stopPropagation(); setShowColors(true); }} className="p-2 hover:bg-bg-secondary rounded-lg text-text-secondary transition-colors hover:text-accent-gold" title="Surligner">
+          <button type="button" aria-label="Surligner" onClick={(e) => { e.stopPropagation(); setShowColors(true); }} className="p-2 hover:bg-bg-secondary rounded-lg text-text-secondary transition-colors hover:text-accent-gold" title="Surligner">
              <Type size={18} />
           </button>
           <div className="relative">
-            <button onClick={(e) => { e.stopPropagation(); setShowShareOptions(!showShareOptions); }} className="p-2 hover:bg-bg-secondary rounded-lg text-text-secondary transition-colors hover:text-accent-gold" title="Partager">
+            <button type="button" aria-label="Partager" aria-expanded={showShareOptions} onClick={(e) => { e.stopPropagation(); setShowShareOptions(!showShareOptions); }} className="p-2 hover:bg-bg-secondary rounded-lg text-text-secondary transition-colors hover:text-accent-gold" title="Partager">
                <Share2 size={18} />
             </button>
             {showShareOptions && (
               <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-48 bg-bg-card border border-border shadow-xl rounded-lg py-2 flex flex-col z-50">
-                <button onClick={handleCopyImage} className="px-4 py-2 text-sm text-left hover:bg-bg-secondary transition-colors">Copier l'image</button>
-                <button onClick={handleCopyText} className="px-4 py-2 text-sm text-left hover:bg-bg-secondary transition-colors">Copier le texte</button>
-                <button onClick={handleShareWhatsApp} className="px-4 py-2 text-sm text-left hover:bg-bg-secondary transition-colors text-green-600">WhatsApp</button>
-                <button onClick={handleShareTwitter} className="px-4 py-2 text-sm text-left hover:bg-bg-secondary transition-colors text-blue-500">Twitter / X</button>
+                <button type="button" onClick={handleCopyImage} className="px-4 py-2 text-sm text-left hover:bg-bg-secondary transition-colors">Copier l'image</button>
+                <button type="button" onClick={handleCopyText} className="px-4 py-2 text-sm text-left hover:bg-bg-secondary transition-colors">Copier le texte</button>
+                <button type="button" onClick={handleShareWhatsApp} className="px-4 py-2 text-sm text-left hover:bg-bg-secondary transition-colors text-green-600">WhatsApp</button>
+                <button type="button" onClick={handleShareTwitter} className="px-4 py-2 text-sm text-left hover:bg-bg-secondary transition-colors text-blue-500">Twitter / X</button>
               </div>
             )}
           </div>
           <div className="w-px h-6 bg-border mx-1"></div>
-          <button onClick={(e) => { e.stopPropagation(); onClose(); }} className="p-2 hover:bg-bg-secondary rounded-lg text-text-muted transition-colors">
+          <button type="button" aria-label="Fermer les actions" onClick={(e) => { e.stopPropagation(); onClose(); }} className="p-2 hover:bg-bg-secondary rounded-lg text-text-muted transition-colors">
             <X size={18} />
           </button>
         </>
