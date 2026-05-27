@@ -3,6 +3,7 @@ import { useFavoritesStore } from '../../store/useFavoritesStore';
 import { useNavigate } from 'react-router-dom';
 import { Trash2, Share2, ChevronRight, Bookmark } from 'lucide-react';
 import { FEATURED_TRANSLATIONS } from '../../utils/bibleApi';
+import { EmptyState } from '../../components/EmptyState';
 import toast from 'react-hot-toast';
 
 const BIBLICAL_BOOK_ORDER = [
@@ -54,17 +55,12 @@ export const FavoritesPage: React.FC = () => {
 
   if (favorites.length === 0) {
     return (
-      <div className="max-w-3xl mx-auto py-20 text-center">
-        <Bookmark size={48} className="mx-auto text-text-muted mb-4 opacity-50" />
-        <h2 className="font-display text-2xl font-semibold text-text-primary mb-2">Aucun passage sauvegardé pour le moment.</h2>
-        <p className="text-text-secondary">Vos marque-pages bibliques apparaîtront ici.</p>
-        <button
-          onClick={() => navigate('/')}
-          className="mt-6 px-6 py-2 bg-bg-secondary text-text-primary rounded-lg font-medium hover:bg-border transition-colors"
-        >
-          Commencer à lire
-        </button>
-      </div>
+      <EmptyState
+        title="Aucun passage sauvegardé pour le moment."
+        message="Vos marque-pages bibliques apparaîtront ici."
+        actionLabel="Commencer à lire"
+        onAction={() => navigate('/')}
+      />
     );
   }
 

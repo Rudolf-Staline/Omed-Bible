@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, BookOpen } from 'lucide-react';
 import { usePlansStore } from '../../store/usePlansStore';
 import { READING_PLANS } from './PlansPage';
+import { EmptyState } from '../../components/EmptyState';
 
 const PLAN_READING_PATHS: Record<string, { bookId: string; maxChapter: number }> = {
   'bible-365': { bookId: 'genese', maxChapter: 50 },
@@ -31,11 +32,12 @@ export const PlanDetail: React.FC = () => {
 
   if (!plan || !planProgress) {
     return (
-      <div className="py-20 text-center text-text-muted">
-        Parcours introuvable ou non commencé.
-        <br />
-        <button onClick={() => navigate('/plans')} className="text-accent-brown underline mt-4">Retour aux parcours</button>
-      </div>
+      <EmptyState
+        title="Parcours introuvable"
+        message="Ce parcours n'a pas été trouvé ou n'a pas encore été commencé."
+        actionLabel="Retour aux parcours"
+        onAction={() => navigate('/plans')}
+      />
     );
   }
 

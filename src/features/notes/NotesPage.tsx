@@ -1,7 +1,8 @@
 import React, { useMemo, useState } from 'react';
 import { useNotesStore } from '../../store/useNotesStore';
 import { useNavigate } from 'react-router-dom';
-import { Edit3, Trash2, Check, X, Search, BookOpenText } from 'lucide-react';
+import { Edit3, Trash2, Check, X, Search } from 'lucide-react';
+import { EmptyState } from '../../components/EmptyState';
 import toast from 'react-hot-toast';
 
 const normalizeBookId = (bookId: string) =>
@@ -78,19 +79,12 @@ export const NotesPage: React.FC = () => {
 
   if (notes.length === 0) {
     return (
-      <div className="max-w-3xl mx-auto py-20 text-center">
-        <BookOpenText size={46} className="mx-auto text-text-muted mb-4 opacity-60" />
-        <h2 className="font-display text-2xl font-semibold text-text-primary mb-2">Carnet de notes</h2>
-        <p className="text-text-secondary max-w-lg mx-auto">
-          Vos notes apparaîtront ici lorsque vous annoterez un passage.
-        </p>
-        <button
-          onClick={() => navigate('/')}
-          className="mt-6 px-6 py-2 bg-bg-secondary text-text-primary rounded-lg font-medium hover:bg-border transition-colors"
-        >
-          Commencer à lire
-        </button>
-      </div>
+      <EmptyState
+        title="Carnet de notes"
+        message="Vos notes apparaîtront ici lorsque vous annoterez un passage."
+        actionLabel="Commencer à lire"
+        onAction={() => navigate('/')}
+      />
     );
   }
 
