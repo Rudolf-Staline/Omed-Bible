@@ -51,11 +51,12 @@ export const ChapterView: React.FC<ChapterViewProps> = ({ translation, bookId, c
         const data = await getChapter(translation, bookId, chapter);
         cacheChapter(translation, bookId, chapter, data);
         if (mounted) setVerses(data);
-      } catch (err: any) {
+      } catch (err) {
         if (cached) {
           if (mounted) setVerses(cached);
         } else if (mounted) {
-          setError(err.message || 'Erreur lors du chargement du chapitre');
+          const message = err instanceof Error ? err.message : 'Erreur lors du chargement du chapitre';
+          setError(message);
         }
       } finally {
         if (mounted) setLoading(false);
@@ -68,6 +69,7 @@ export const ChapterView: React.FC<ChapterViewProps> = ({ translation, bookId, c
   if (loading) return <LoadingState title="Chargement du chapitre" message="Nous ouvrons ce passage." />;
   if (error) return <ErrorState title="Chapitre indisponible" message={error} />;
 
+  const isStudyMode = settings.readingMode === 'Étude';
   const fontClass = settings.fontFamily === 'Lora' ? 'font-body' : 'font-sans';
 
   const sizeClasses = {
@@ -78,20 +80,20 @@ export const ChapterView: React.FC<ChapterViewProps> = ({ translation, bookId, c
   };
 
   const leadingClasses = {
-    Normal: 'leading-[1.9]',
-    Relaxed: 'leading-[2.05]',
-    Large: 'leading-[2.2]',
+    Normal: isStudyMode ? 'leading-[2.05]' : 'leading-[1.9]',
+    Relaxed: isStudyMode ? 'leading-[2.2]' : 'leading-[2.05]',
+    Large: isStudyMode ? 'leading-[2.35]' : 'leading-[2.2]',
   };
 
   const widthClasses = {
     Narrow: 'max-w-2xl',
-    Comfortable: 'max-w-3xl',
+    Comfortable: isStudyMode ? 'max-w-4xl' : 'max-w-3xl',
     Wide: 'max-w-5xl',
   };
 
   const densityClasses = {
-    Compact: 'space-y-3',
-    Aired: 'space-y-5',
+    Compact: isStudyMode ? 'space-y-5' : 'space-y-3',
+    Aired: isStudyMode ? 'space-y-7' : 'space-y-5',
   };
 
   const getHighlightStyle = (color: HighlightColor) => {
@@ -107,9 +109,12 @@ export const ChapterView: React.FC<ChapterViewProps> = ({ translation, bookId, c
 
   return (
     <div className={`${widthClasses[settings.readingWidth]} mx-auto pb-32 px-1 sm:px-2 ${fontClass} ${sizeClasses[settings.fontSize]} ${leadingClasses[settings.lineHeight]}`}>
-      <h2 className="font-display text-3xl sm:text-4xl font-semibold mb-10 text-text-primary/95 mt-6 tracking-tight">
-        {verses.length > 0 ? `${verses[0].book_name} ${chapter}` : `${bookId} ${chapter}`}
-      </h2>
+      <div className="mb-10 mt-6 flex flex-col gap-2 border-b border-border pb-5">
+        <p className="text-xs uppercase tracking-[0.16em] text-text-muted">{isStudyMode ? 'Mode étude' : 'Lecture'}</p>
+        <h2 className="font-display text-3xl sm:text-4xl font-semibold text-text-primary/95 tracking-tight">
+          {verses.length > 0 ? `${verses[0].book_name} ${chapter}` : `${bookId} ${chapter}`}
+        </h2>
+      </div>
 
       <div className={densityClasses[settings.readingDensity]}>
         {verses.map((verse) => {
@@ -118,7 +123,7 @@ export const ChapterView: React.FC<ChapterViewProps> = ({ translation, bookId, c
           const highlight = highlights[verseId];
 
           return (
-            <div key={verseId} className="relative group cursor-pointer" onClick={() => setSelectedVerseId(isSelected ? null : verseId)}>
+            <div key={verseId} className={clsx('relative group cursor-pointer rounded-xl transition-colors', isStudyMode && 'border border-transparent hover:border-border/70 hover:bg-bg-card/35 px-3 py-2')} onClick={() => setSelectedVerseId(isSelected ? null : verseId)}>
               {isSelected && (
                 <div className="absolute -top-12 left-0 right-0 z-20 flex justify-center">
                   <VerseActions verse={verse} verseId={verseId} translation={translation} bookId={bookId} onClose={() => setSelectedVerseId(null)} />
@@ -130,7 +135,7 @@ export const ChapterView: React.FC<ChapterViewProps> = ({ translation, bookId, c
                 isSelected ? 'bg-bg-card ring-1 ring-accent-gold/20 shadow-sm' : ''
               )}>
                 {settings.showVerseNumbers && (
-                  <sup className="font-mono text-[10px] text-text-muted/80 font-medium mr-2 align-top mt-1 inline-block select-none tracking-wide">
+                  <sup className={clsx('font-mono text-[10px] text-text-muted/80 font-medium mr-2 align-top mt-1 inline-block select-none tracking-wide', isStudyMode && 'text-xs text-accent-brown')}>
                     {verse.verse}
                   </sup>
                 )}
