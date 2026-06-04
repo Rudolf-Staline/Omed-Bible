@@ -1,92 +1,51 @@
 # Omed Scripture
 
-Omed Scripture est une application web moderne de lecture, d’annotation et d’étude biblique. Elle propose une expérience sobre centrée sur le texte biblique, avec plusieurs traductions, un mode comparaison, des outils personnels d’organisation et une synchronisation cloud via Google Drive.
+Omed Scripture est une application web de lecture, d’annotation et d’étude biblique. Elle privilégie une expérience sobre centrée sur le texte, la méditation, les notes personnelles et l’organisation des passages.
 
-**Application :** https://omed-bible.vercel.app
+## État produit
 
----
+Fonctions disponibles :
 
-## Vue d’ensemble
-
-Omed Scripture vise à offrir un espace calme pour lire, étudier et méditer les Écritures. L’application rassemble les fonctions essentielles d’un lecteur biblique personnel dans une interface lisible, structurée et pensée pour la concentration.
-
-Fonctions principales :
-
+- accueil avec reprise de lecture ;
+- verset du jour déterministe selon la date ;
 - lecture par livres et chapitres ;
 - traductions françaises et anglaises ;
-- comparaison de traductions côte à côte ;
-- lecture audio des chapitres ;
-- recherche de versets ;
-- notes personnelles ;
-- marque-pages ;
-- surlignages ;
+- comparaison de deux traductions ;
+- mode Lecture et mode Étude ;
+- audio via synthèse vocale navigateur ;
+- recherche de versets avec historique local ;
+- notes, marque-pages et surlignages ;
+- collections personnelles de versets ;
 - parcours de lecture ;
-- synchronisation Google Drive.
+- synchronisation Google Drive AppData ;
+- cache local récent pour lecture hors ligne partielle.
 
----
+## Branches et déploiement
 
-## Fonctionnalités
+État observé : la branche par défaut GitHub est `feature/omed-bible-completion-14526576659558922335`. La documentation précédente indiquait un déploiement sur `main`, mais `main` n’est pas la branche canonique la plus avancée.
 
-### Lecture biblique
+Branche canonique actuelle pour les PR produit :
 
-- Navigation fluide entre livres et chapitres.
-- Six traductions disponibles en français et en anglais.
-- Comparaison simultanée de deux traductions.
-- Lecteur audio intégré pour écouter un chapitre.
+```text
+feature/omed-bible-completion-14526576659558922335
+```
 
-### Recherche
+Action manuelle recommandée avant une v1 : choisir une branche stable unique, puis aligner GitHub et Vercel. L’option propre est de remettre `main` à jour et de configurer Vercel pour déployer `main`. Tant que ce n’est pas fait, le dépôt doit considérer la branche feature ci-dessus comme branche stable temporaire.
 
-- Recherche de versets par mots-clés.
-- Accès rapide aux passages trouvés.
+## Traductions
 
-### Annotation et organisation
+Les traductions affichées viennent de `src/utils/bibleApi.ts`, source unique de vérité.
 
-- Marque-pages pour sauvegarder des versets importants.
-- Surlignages avec plusieurs couleurs.
-- Notes personnelles associées aux versets.
+| Traduction | Code | Langue | Source | Recherche |
+|---|---:|---|---|---|
+| Louis Segond 1910 | `lsg` | Français | bolls.life | Oui |
+| Darby Français | `darby` | Français | bolls.life | Oui |
+| King James Version | `kjv` | Anglais | bible-api.com | Oui |
+| World English Bible | `web` | Anglais | bible-api.com | Oui |
+| Bible in Basic English | `bbe` | Anglais | bible-api.com | Non garantie / désactivée |
+| New International Version | `niv` | Anglais | API.Bible | Seulement si `VITE_BIBLE_API_KEY` est configurée |
 
-### Parcours de lecture
-
-- Parcours de lecture biblique avec suivi de progression.
-- Vue détaillée des étapes de lecture.
-
-### Synchronisation Google Drive
-
-- Authentification Google Sign-In.
-- Synchronisation des marque-pages, notes, surlignages, parcours et position de lecture.
-- Stockage des données applicatives via Google Drive AppData.
-
-### Préférences
-
-- Personnalisation de l’expérience de lecture.
-- Réglages visuels et options d’affichage selon les paramètres disponibles dans l’application.
-
----
-
-## Design direction
-
-L’application suit une direction visuelle calme, adulte et lisible. L’objectif est de réduire la distraction, de renforcer le confort de lecture et de donner au texte biblique une place centrale. L’interface privilégie la sobriété, l’espacement, une hiérarchie claire et des éléments d’action discrets.
-
----
-
-## Documentation
-
-Un guide utilisateur court est disponible dans [`docs/USER_GUIDE.md`](docs/USER_GUIDE.md). Il couvre la lecture, les traductions, la comparaison, l’audio, les marque-pages, les notes, les surlignages, les parcours et la synchronisation Google Drive.
-
----
-
-## Traductions disponibles
-
-| Traduction | Code | Langue | Source API |
-|---|---|---|---|
-| Louis Segond 1910 | `LSG` | Français | [api.getbible.net](https://api.getbible.net) |
-| Darby (Français) | `DBY` | Français | [api.getbible.net](https://api.getbible.net) |
-| Martin 1744 | `MAR` | Français | [api.getbible.net](https://api.getbible.net) |
-| King James Version | `KJV` | English | [bible-api.com](https://bible-api.com) |
-| World English Bible | `WEB` | English | [bible-api.com](https://bible-api.com) |
-| New International Version | `NIV` | English | [API.Bible](https://scripture.api.bible) |
-
----
+Les traductions nécessitant une clé API sont masquées lorsque la clé n’est pas configurée. L’application évite les fallbacks trompeurs : si une traduction ou une recherche n’est pas disponible, elle affiche un message clair.
 
 ## Stack technique
 
@@ -95,25 +54,18 @@ Un guide utilisateur court est disponible dans [`docs/USER_GUIDE.md`](docs/USER_
 | React 19 | Interface utilisateur |
 | TypeScript | Typage statique |
 | Vite 8 | Build et serveur de développement |
-| Tailwind CSS 4 | Système de styles utilitaires |
-| React Router 7 | Routage côté client |
-| Zustand | Gestion d’état global |
-| Framer Motion | Animations d’interface |
+| Tailwind CSS 4 | Styles |
+| React Router 7 | Routage |
+| Zustand | État global |
+| Framer Motion | Animations |
 | Lucide React | Icônes |
 | React Hot Toast | Notifications |
 | @react-oauth/google | Authentification Google |
-| Vercel | Déploiement et hébergement |
-
----
+| Vercel | Hébergement |
 
 ## Installation locale
 
-### Prérequis
-
-- Node.js >= 18
-- npm >= 9
-
-### Démarrage
+Prérequis : Node.js >= 18 et npm >= 9.
 
 ```bash
 git clone https://github.com/Rudolf-Staline/Omed-Bible.git
@@ -124,9 +76,7 @@ npm run dev
 
 Application locale : `http://localhost:5173`
 
-### Variables d’environnement
-
-Copiez le fichier d’exemple puis renseignez les valeurs nécessaires :
+Variables d’environnement :
 
 ```bash
 cp .env.example .env
@@ -137,40 +87,28 @@ VITE_BIBLE_API_KEY=votre_cle_api_bible
 VITE_GOOGLE_CLIENT_ID=votre_client_id_google
 ```
 
-- `VITE_BIBLE_API_KEY` : clé utilisée pour les traductions dépendant d’API.Bible.
-- `VITE_GOOGLE_CLIENT_ID` : identifiant OAuth utilisé pour Google Sign-In et la synchronisation Google Drive AppData.
-
-Clé API.Bible disponible sur https://scripture.api.bible.
-
----
-
-## Structure du projet
-
-```text
-src/
-├── components/          # Composants réutilisables
-├── features/            # Pages fonctionnelles
-├── store/               # Stores Zustand
-├── utils/               # API Bible + synchronisation Drive
-├── App.tsx              # Routes
-└── main.tsx             # Entrée application
-```
-
----
+- `VITE_BIBLE_API_KEY` active les traductions dépendant d’API.Bible.
+- `VITE_GOOGLE_CLIENT_ID` active Google Sign-In et la synchronisation Drive AppData.
 
 ## Déploiement
 
-Le projet est déployé sur Vercel à chaque push sur `main`.
+`vercel.json` configure :
 
-Configurez les variables d’environnement nécessaires dans les paramètres du projet Vercel avant le déploiement.
+- build : `npm run build` ;
+- sortie : `dist` ;
+- framework : Vite ;
+- proxy `/bible-api/` vers bible-api.com ;
+- proxy `/bible-proxy/` vers API.Bible ;
+- rewrite SPA vers `index.html`.
 
-Configuration de proxy dans `vercel.json` :
+Avant publication, vérifier manuellement que la branche de production Vercel correspond à la branche stable GitHub choisie.
 
-- `/bible-api/` vers bible-api.com ;
-- `/bible-proxy/` vers API.Bible ;
-- `/:path*` vers `index.html` pour le routage SPA.
+## Limites restantes
 
----
+- La synchronisation Google Drive doit encore être durcie côté auth/token.
+- Les collections sont stockées localement et incluses dans l’upload Drive, mais la restauration automatique complète des collections reste à finaliser.
+- La recherche dépend de bolls.life et n’est pas disponible pour toutes les traductions.
+- Le cache offline reste limité aux chapitres récemment consultés.
 
 ## Licence
 
