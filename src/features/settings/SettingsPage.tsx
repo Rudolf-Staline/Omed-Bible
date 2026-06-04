@@ -1,28 +1,38 @@
 import React, { useState } from 'react';
 import { useSettingsStore } from '../../store/useSettingsStore';
-import type {
-  FontSize,
-  LineHeight,
-  FontFamily,
-  Theme,
-  Language,
-  ReadingWidth,
-  ReadingDensity,
-} from '../../store/useSettingsStore';
+import type { FontFamily, FontSize, Language, LineHeight, ReadingDensity, ReadingMode, ReadingWidth, Theme } from '../../store/useSettingsStore';
 import { useAuthStore } from '../../store/useAuthStore';
 import { useBibleStore } from '../../store/useBibleStore';
 import { useFavoritesStore } from '../../store/useFavoritesStore';
 import { useHighlightsStore } from '../../store/useHighlightsStore';
 import { useNotesStore } from '../../store/useNotesStore';
 import { usePlansStore } from '../../store/usePlansStore';
-import { FEATURED_TRANSLATIONS } from '../../utils/bibleApi';
-import { syncFileToDrive, syncFileFromDrive, DRIVE_FILES } from '../../utils/driveSync';
-import { Settings, Cloud, LogOut, Download, Trash2, RefreshCw, Palette, BookOpen, Database } from 'lucide-react';
+import { useCollectionsStore } from '../../store/useCollectionsStore';
+import { FEATURED_TRANSLATIONS, UNAVAILABLE_TRANSLATIONS } from '../../utils/bibleApi';
+import { DRIVE_FILES, syncFileFromDrive, syncFileToDrive } from '../../utils/driveSync';
+import { BookOpen, Cloud, Database, Download, LogOut, Palette, RefreshCw, Settings, Trash2 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 
+const SegmentedControl = <T extends string>({ values, selected, onSelect }: { values: readonly T[]; selected: T; onSelect: (value: T) => void }) => (
+  <div className="flex gap-2 bg-bg-primary p-1 rounded-lg border border-border">
+    {values.map((value) => (
+      <button
+        type="button"
+        key={value}
+        onClick={() => onSelect(value)}
+        className={`flex-1 py-2 rounded-md text-sm font-medium transition-colors ${
+          selected === value ? 'bg-bg-card shadow-sm text-text-primary border border-border/50' : 'text-text-muted hover:text-text-primary'
+        }`}
+      >
+        {value}
+      </button>
+    ))}
+  </div>
+);
+
 export const SettingsPage: React.FC = () => {
-  const { settings, updateSettings, synced, setSynced, loadSettings } = useSettingsStore();
+  const { settings, updateSettings, synced, setSynced, loadSettings, syncState, syncError, lastSyncedAt, setSyncStatus } = useSettingsStore();
   const { user, token, logout } = useAuthStore();
   const navigate = useNavigate();
   const [syncing, setSyncing] = useState(false);
@@ -31,6 +41,7 @@ export const SettingsPage: React.FC = () => {
   const { loadHighlights, highlights } = useHighlightsStore();
   const { loadNotes, notes } = useNotesStore();
   const { loadPlans, progress } = usePlansStore();
+  const { collections } = useCollectionsStore();
   const setPosition = useBibleStore((state) => state.setPosition);
 
   const fontSizes: FontSize[] = ['S', 'M', 'L', 'XL'];
@@ -40,36 +51,33 @@ export const SettingsPage: React.FC = () => {
   const languages: Language[] = ['Français', 'English'];
   const readingWidths: ReadingWidth[] = ['Narrow', 'Comfortable', 'Wide'];
   const readingDensities: ReadingDensity[] = ['Compact', 'Aired'];
+  const readingModes: ReadingMode[] = ['Lecture', 'Étude'];
 
   const handleSyncData = async () => {
     if (!token) {
-      toast.error("Vous devez être connecté pour synchroniser vos données.");
+      toast.error('Vous devez être connecté pour synchroniser vos données.');
       return;
     }
     setSyncing(true);
+    setSyncStatus({ state: 'syncing', error: null });
     try {
       const remoteSettings = await syncFileFromDrive(DRIVE_FILES.settings, token);
       if (remoteSettings) loadSettings(remoteSettings);
-
       const remoteFavorites = await syncFileFromDrive(DRIVE_FILES.favorites, token);
       if (remoteFavorites) loadFavorites(remoteFavorites);
-
       const remoteHighlights = await syncFileFromDrive(DRIVE_FILES.highlights, token);
       if (remoteHighlights) loadHighlights(remoteHighlights);
-
       const remoteNotes = await syncFileFromDrive(DRIVE_FILES.notes, token);
       if (remoteNotes) loadNotes(remoteNotes);
-
       const remotePlans = await syncFileFromDrive(DRIVE_FILES.plans, token);
       if (remotePlans) loadPlans(remotePlans);
-
       const remotePosition = await syncFileFromDrive(DRIVE_FILES.position, token);
       if (remotePosition) setPosition(remotePosition.translation, remotePosition.bookId, remotePosition.chapter);
-
       setSynced(true);
-      toast.success('Synchronisation réussie !');
-    } catch (err) {
-      console.error('Drive sync failed', err);
+      setSyncStatus({ state: 'synced', error: null, lastSyncedAt: Date.now() });
+      toast.success('Synchronisation réussie.');
+    } catch {
+      setSyncStatus({ state: 'error', error: 'Échec de la synchronisation Drive.' });
       toast.error('Échec de la synchronisation.');
     } finally {
       setSyncing(false);
@@ -79,6 +87,7 @@ export const SettingsPage: React.FC = () => {
   const handleForceUpload = async () => {
     if (!token) return;
     setSyncing(true);
+    setSyncStatus({ state: 'syncing', error: null });
     try {
       await Promise.all([
         syncFileToDrive(DRIVE_FILES.settings, settings, token),
@@ -86,11 +95,13 @@ export const SettingsPage: React.FC = () => {
         syncFileToDrive(DRIVE_FILES.highlights, highlights, token),
         syncFileToDrive(DRIVE_FILES.notes, notes, token),
         syncFileToDrive(DRIVE_FILES.plans, progress, token),
+        syncFileToDrive(DRIVE_FILES.collections, collections, token),
       ]);
       setSynced(true);
-      toast.success('Sauvegarde en ligne réussie !');
-    } catch (err) {
-      console.error('Drive upload failed', err);
+      setSyncStatus({ state: 'synced', error: null, lastSyncedAt: Date.now() });
+      toast.success('Sauvegarde en ligne réussie.');
+    } catch {
+      setSyncStatus({ state: 'error', error: 'Échec de la sauvegarde Drive.' });
       toast.error('Échec de la sauvegarde.');
     } finally {
       setSyncing(false);
@@ -98,7 +109,7 @@ export const SettingsPage: React.FC = () => {
   };
 
   const exportData = () => {
-    const data = { settings, favorites, highlights, notes, progress };
+    const data = { settings, favorites, highlights, notes, progress, collections };
     const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -117,191 +128,74 @@ export const SettingsPage: React.FC = () => {
     }
   };
 
-  const SegmentedControl = <T extends string>({ values, selected, onSelect }: { values: readonly T[]; selected: T; onSelect: (value: T) => void }) => (
-    <div className="flex gap-2 bg-bg-primary p-1 rounded-lg border border-border">
-      {values.map((value) => (
-        <button
-          type="button"
-          key={value}
-          onClick={() => onSelect(value)}
-          className={`flex-1 py-2 rounded-md text-sm font-medium transition-colors ${
-            selected === value
-              ? 'bg-bg-card shadow-sm text-text-primary border border-border/50'
-              : 'text-text-muted hover:text-text-primary'
-          }`}
-        >
-          {value}
-        </button>
-      ))}
-    </div>
-  );
-
   return (
     <div className="max-w-4xl mx-auto py-8">
       <h1 className="font-display text-3xl font-bold mb-2 text-text-primary flex items-center gap-3">
-        <Settings className="text-accent-gold" />
-        Préférences
+        <Settings className="text-accent-gold" /> Préférences
       </h1>
       <p className="text-text-secondary mb-8">Personnalisez votre expérience de lecture biblique en toute simplicité.</p>
 
       <div className="space-y-8">
         <section className="bg-bg-card border border-border rounded-xl p-6">
-          <h2 className="font-display font-semibold text-xl text-text-primary mb-6 flex items-center gap-2">
-            <Palette size={20} className="text-accent-brown" /> Apparence
-          </h2>
+          <h2 className="font-display font-semibold text-xl text-text-primary mb-6 flex items-center gap-2"><Palette size={20} className="text-accent-brown" /> Apparence</h2>
           <div className="space-y-6">
-            <div>
-              <label className="block text-sm font-medium text-text-secondary mb-2">Thème</label>
-              <SegmentedControl values={themes} selected={settings.theme} onSelect={(theme) => updateSettings({ theme })} />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-text-secondary mb-2">Police de lecture</label>
-              <div className="flex gap-2 bg-bg-primary p-1 rounded-lg border border-border">
-                {fontFamilies.map((ff) => (
-                  <button
-                    type="button"
-                    key={ff}
-                    onClick={() => updateSettings({ fontFamily: ff })}
-                    className={`flex-1 py-2 rounded-md text-sm font-medium transition-colors ${
-                      settings.fontFamily === ff
-                        ? 'bg-bg-card shadow-sm text-text-primary border border-border/50'
-                        : 'text-text-muted hover:text-text-primary'
-                    } ${ff === 'Lora' ? 'font-serif' : 'font-sans'}`}
-                  >
-                    {ff}
-                  </button>
-                ))}
-              </div>
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-text-secondary mb-2">Langue de l'interface</label>
-              <SegmentedControl values={languages} selected={settings.language} onSelect={(language) => updateSettings({ language })} />
-            </div>
+            <div><label className="block text-sm font-medium text-text-secondary mb-2">Thème</label><SegmentedControl values={themes} selected={settings.theme} onSelect={(theme) => updateSettings({ theme })} /></div>
+            <div><label className="block text-sm font-medium text-text-secondary mb-2">Police de lecture</label><SegmentedControl values={fontFamilies} selected={settings.fontFamily} onSelect={(fontFamily) => updateSettings({ fontFamily })} /></div>
+            <div><label className="block text-sm font-medium text-text-secondary mb-2">Langue de l'interface</label><SegmentedControl values={languages} selected={settings.language} onSelect={(language) => updateSettings({ language })} /></div>
           </div>
         </section>
 
         <section className="bg-bg-card border border-border rounded-xl p-6">
-          <h2 className="font-display font-semibold text-xl text-text-primary mb-6 flex items-center gap-2">
-            <BookOpen size={20} className="text-accent-brown" /> Lecture
-          </h2>
+          <h2 className="font-display font-semibold text-xl text-text-primary mb-6 flex items-center gap-2"><BookOpen size={20} className="text-accent-brown" /> Lecture</h2>
           <div className="space-y-6">
             <div>
               <label className="block text-sm font-medium text-text-secondary mb-2">Version par défaut</label>
-              <select
-                value={settings.defaultTranslation}
-                onChange={(e) => updateSettings({ defaultTranslation: e.target.value })}
-                className="w-full bg-bg-primary border border-border rounded-lg px-4 py-2 text-text-primary focus:outline-none focus:ring-1 focus:ring-accent-gold"
-              >
-                {FEATURED_TRANSLATIONS.map((t) => (
-                  <option key={t.id} value={t.id}>{t.name} ({t.short})</option>
-                ))}
+              <select value={settings.defaultTranslation} onChange={(e) => updateSettings({ defaultTranslation: e.target.value })} className="w-full bg-bg-primary border border-border rounded-lg px-4 py-2 text-text-primary focus:outline-none focus:ring-1 focus:ring-accent-gold">
+                {FEATURED_TRANSLATIONS.map((t) => <option key={t.id} value={t.id}>{t.name} ({t.short})</option>)}
               </select>
+              {UNAVAILABLE_TRANSLATIONS.length > 0 && <p className="mt-2 text-xs text-text-muted">Traductions masquées faute de clé API : {UNAVAILABLE_TRANSLATIONS.map((t) => t.short).join(', ')}.</p>}
             </div>
-            <div>
-              <label className="block text-sm font-medium text-text-secondary mb-2">Taille de texte</label>
-              <SegmentedControl values={fontSizes} selected={settings.fontSize} onSelect={(fontSize) => updateSettings({ fontSize })} />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-text-secondary mb-2">Interligne</label>
-              <SegmentedControl values={lineHeights} selected={settings.lineHeight} onSelect={(lineHeight) => updateSettings({ lineHeight })} />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-text-secondary mb-2">Largeur de lecture</label>
-              <SegmentedControl values={readingWidths} selected={settings.readingWidth} onSelect={(readingWidth) => updateSettings({ readingWidth })} />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-text-secondary mb-2">Affichage</label>
-              <SegmentedControl values={readingDensities} selected={settings.readingDensity} onSelect={(readingDensity) => updateSettings({ readingDensity })} />
-            </div>
+            <div><label className="block text-sm font-medium text-text-secondary mb-2">Mode</label><SegmentedControl values={readingModes} selected={settings.readingMode} onSelect={(readingMode) => updateSettings({ readingMode })} /></div>
+            <div><label className="block text-sm font-medium text-text-secondary mb-2">Taille de texte</label><SegmentedControl values={fontSizes} selected={settings.fontSize} onSelect={(fontSize) => updateSettings({ fontSize })} /></div>
+            <div><label className="block text-sm font-medium text-text-secondary mb-2">Interligne</label><SegmentedControl values={lineHeights} selected={settings.lineHeight} onSelect={(lineHeight) => updateSettings({ lineHeight })} /></div>
+            <div><label className="block text-sm font-medium text-text-secondary mb-2">Largeur de lecture</label><SegmentedControl values={readingWidths} selected={settings.readingWidth} onSelect={(readingWidth) => updateSettings({ readingWidth })} /></div>
+            <div><label className="block text-sm font-medium text-text-secondary mb-2">Espacement</label><SegmentedControl values={readingDensities} selected={settings.readingDensity} onSelect={(readingDensity) => updateSettings({ readingDensity })} /></div>
             <label className="flex items-center justify-between p-4 rounded-lg border border-border bg-bg-primary cursor-pointer">
-              <div>
-                <p className="font-medium text-text-primary">Afficher les numéros de verset</p>
-                <p className="text-sm text-text-muted">Masquer les numéros pour une lecture plus fluide.</p>
-              </div>
-              <input
-                type="checkbox"
-                checked={settings.showVerseNumbers}
-                onChange={(e) => updateSettings({ showVerseNumbers: e.target.checked })}
-                className="w-5 h-5 accent-accent-gold"
-              />
+              <div><p className="font-medium text-text-primary">Afficher les numéros de verset</p><p className="text-sm text-text-muted">Masquer les numéros pour une lecture plus fluide.</p></div>
+              <input type="checkbox" checked={settings.showVerseNumbers} onChange={(e) => updateSettings({ showVerseNumbers: e.target.checked })} className="w-5 h-5 accent-accent-gold" />
             </label>
           </div>
         </section>
 
         <section className="bg-bg-card border border-border rounded-xl p-6">
-          <h2 className="font-display font-semibold text-xl text-text-primary mb-6 flex items-center gap-2">
-            <Cloud size={20} className="text-accent-brown" /> Synchronisation
-          </h2>
-
+          <h2 className="font-display font-semibold text-xl text-text-primary mb-6 flex items-center gap-2"><Cloud size={20} className="text-accent-brown" /> Synchronisation</h2>
           {user ? (
             <div className="space-y-6">
               <div className="flex items-center gap-4 bg-bg-primary p-4 rounded-xl border border-border">
                 {user.picture ? <img src={user.picture} alt={user.name} className="w-16 h-16 rounded-full" /> : <div className="w-16 h-16 rounded-full bg-accent-gold text-white flex items-center justify-center font-bold text-xl">{user.name.charAt(0)}</div>}
-                <div>
-                  <h3 className="font-semibold text-lg text-text-primary">{user.name}</h3>
-                  <p className="text-text-secondary">{user.email}</p>
-                </div>
+                <div><h3 className="font-semibold text-lg text-text-primary">{user.name}</h3><p className="text-text-secondary">{user.email}</p></div>
               </div>
-
+              <div className="rounded-xl border border-border bg-bg-primary/70 p-4 text-sm text-text-secondary">
+                <p>État : <span className="font-medium text-text-primary">{syncState}</span></p>
+                {lastSyncedAt && <p>Dernière synchronisation : {new Date(lastSyncedAt).toLocaleString()}</p>}
+                {syncError && <p className="text-red-600">{syncError}</p>}
+              </div>
               <div className="flex flex-col gap-3">
-                <button type="button" onClick={handleSyncData} disabled={syncing} className="flex items-center justify-center gap-2 w-full bg-accent-gold hover:bg-accent-brown text-white py-3 rounded-lg font-medium transition-colors disabled:opacity-50">
-                  <Cloud size={20} />
-                  {syncing ? 'Synchronisation...' : 'Restaurer depuis Google Drive'}
-                </button>
-
-                <button type="button" onClick={handleForceUpload} disabled={syncing} className="flex items-center justify-center gap-2 w-full bg-bg-secondary hover:bg-border text-text-primary py-3 rounded-lg font-medium transition-colors disabled:opacity-50 border border-border">
-                  <RefreshCw size={20} />
-                  Sauvegarder sur Google Drive
-                </button>
-
-                <div className="flex items-center justify-center gap-2 text-sm text-text-muted mt-2">
-                  <span className={`w-2.5 h-2.5 rounded-full ${synced ? 'bg-green-500' : 'bg-gray-400'}`}></span>
-                  État : {synced ? 'Synchronisation automatique activée' : 'Non synchronisé'}
-                </div>
+                <button type="button" onClick={handleSyncData} disabled={syncing} className="flex items-center justify-center gap-2 w-full bg-accent-gold hover:bg-accent-brown text-white py-3 rounded-lg font-medium transition-colors disabled:opacity-50"><Cloud size={20} />{syncing ? 'Synchronisation...' : 'Restaurer depuis Google Drive'}</button>
+                <button type="button" onClick={handleForceUpload} disabled={syncing} className="flex items-center justify-center gap-2 w-full bg-bg-secondary hover:bg-border text-text-primary py-3 rounded-lg font-medium transition-colors disabled:opacity-50 border border-border"><RefreshCw size={20} />Sauvegarder sur Google Drive</button>
               </div>
-
-              <div className="pt-4 border-t border-border mt-4">
-                <button
-                  type="button"
-                  onClick={() => {
-                    logout();
-                    setSynced(false);
-                  }}
-                  className="flex items-center gap-2 text-red-500 hover:text-red-600 font-medium transition-colors"
-                >
-                  <LogOut size={18} />
-                  Se déconnecter
-                </button>
-              </div>
+              <div className="pt-4 border-t border-border mt-4"><button type="button" onClick={() => { logout(); setSynced(false); }} className="flex items-center gap-2 text-red-500 hover:text-red-600 font-medium transition-colors"><LogOut size={18} />Se déconnecter</button></div>
             </div>
           ) : (
-            <div className="text-center py-6">
-              <p className="text-text-secondary mb-4">Connectez-vous pour synchroniser vos données sur tous vos appareils.</p>
-              <button type="button" onClick={() => navigate('/login')} className="bg-bg-secondary hover:bg-border text-text-primary px-6 py-2.5 rounded-lg font-medium transition-colors">Se connecter</button>
-            </div>
+            <div className="text-center py-6"><p className="text-text-secondary mb-4">Connectez-vous pour synchroniser vos données sur tous vos appareils.</p><button type="button" onClick={() => navigate('/login')} className="bg-bg-secondary hover:bg-border text-text-primary px-6 py-2.5 rounded-lg font-medium transition-colors">Se connecter</button></div>
           )}
         </section>
 
         <section className="bg-bg-card border border-border rounded-xl p-6">
-          <h2 className="font-display font-semibold text-xl text-text-primary mb-6 flex items-center gap-2">
-            <Database size={20} className="text-accent-brown" /> Données personnelles
-          </h2>
+          <h2 className="font-display font-semibold text-xl text-text-primary mb-6 flex items-center gap-2"><Database size={20} className="text-accent-brown" /> Données personnelles</h2>
           <div className="space-y-4">
-            <button type="button" onClick={exportData} className="flex items-center gap-3 w-full p-4 rounded-lg border border-border hover:bg-bg-primary transition-colors text-left">
-              <div className="p-2 bg-bg-secondary rounded-lg text-accent-brown"><Download size={20} /></div>
-              <div>
-                <h4 className="font-medium text-text-primary">Exporter mes données</h4>
-                <p className="text-sm text-text-muted">Télécharger une sauvegarde JSON de vos favoris, notes et préférences.</p>
-              </div>
-            </button>
-
-            <button type="button" onClick={clearData} className="flex items-center gap-3 w-full p-4 rounded-lg border border-red-100 hover:bg-red-50 transition-colors text-left">
-              <div className="p-2 bg-red-100 rounded-lg text-red-500"><Trash2 size={20} /></div>
-              <div>
-                <h4 className="font-medium text-red-600">Effacer toutes les données</h4>
-                <p className="text-sm text-red-400">Supprimer définitivement les données locales (irréversible).</p>
-              </div>
-            </button>
+            <button type="button" onClick={exportData} className="flex items-center gap-3 w-full p-4 rounded-lg border border-border hover:bg-bg-primary transition-colors text-left"><div className="p-2 bg-bg-secondary rounded-lg text-accent-brown"><Download size={20} /></div><div><h4 className="font-medium text-text-primary">Exporter mes données</h4><p className="text-sm text-text-muted">Télécharger une sauvegarde JSON complète.</p></div></button>
+            <button type="button" onClick={clearData} className="flex items-center gap-3 w-full p-4 rounded-lg border border-red-100 hover:bg-red-50 transition-colors text-left"><div className="p-2 bg-red-100 rounded-lg text-red-500"><Trash2 size={20} /></div><div><h4 className="font-medium text-red-600">Effacer toutes les données</h4><p className="text-sm text-red-400">Supprimer définitivement les données locales.</p></div></button>
           </div>
         </section>
       </div>
