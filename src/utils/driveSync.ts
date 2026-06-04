@@ -5,6 +5,7 @@ export const DRIVE_FILES = {
   plans: 'omed_bible_plans.json',
   settings: 'omed_bible_settings.json',
   position: 'omed_bible_position.json',
+  collections: 'omed_bible_collections.json',
 };
 
 const getFileId = async (fileName: string, token: string): Promise<string | null> => {
